@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AccountPro - Dashboard</title>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="dash.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-top">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div>
+                    <strong>AccountPro</strong>
+                    <small>Accounting System</small>
+                </div>
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <a href="dashboard.html"
+                   class="nav-item active">
+
+                    <i class="fa-solid fa-grip-2"></i>
+                    <span>Dashboard</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="nav-item future-link"
+                   data-module="Product Management">
+
+                    <i class="fa-solid fa-box"></i>
+                    <span>Product Management</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="nav-item future-link"
+                   data-module="Sales History">
+
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Sales History</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="nav-item future-link"
+                   data-module="Reports">
+
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Reports</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="nav-item future-link"
+                   data-module="Settings">
+
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <button class="sidebar-action" id="dark-mode-btn">
+
+                <i class="fa-regular fa-sun" id="theme-icon"></i>
+
+                <span>Dark mode</span>
+
+            </button>
+
+
+            <button class="sidebar-action logout-btn" id="logout-btn">
+
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="main-content">
+
+        <!-- =====================================
+             TOP NAVBAR
+        ====================================== -->
+
+        <header class="topbar">
+
+            <div class="search-container">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    id="global-search"
+                    placeholder="Search invoices, products, customers..."
+                    autocomplete="off"
+                >
+
+                <div
+                    class="search-results"
+                    id="search-results">
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <!-- Notification -->
+
+                <div class="notification-wrapper">
+
+                    <button
+                        class="notification-btn"
+                        id="notification-btn"
+                        aria-label="Notifications">
+
+                        <i class="fa-regular fa-bell"></i>
+
+                        <span
+                            class="notification-count"
+                            id="notification-count">
+                            0
+                        </span>
+
+                    </button>
+
+
+                    <div
+                        class="notification-panel"
+                        id="notification-panel">
+
+                        <div class="notification-header">
+
+                            <strong>Notifications</strong>
+
+                            <button id="mark-all-read">
+                                Mark all read
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="notification-list"
+                            id="notification-list">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- User -->
+
+                <div class="navbar-user">
+
+                    <div
+                        class="user-avatar"
+                        id="user-avatar">
+                        U
+                    </div>
+
+                    <div class="user-info">
+
+                        <strong id="navbar-user-name">
+                            User
+                        </strong>
+
+                        <span>Finance Admin</span>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="mobile-menu"
+                    id="mobile-menu">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================
+             DASHBOARD CONTENT
+        ====================================== -->
+
+        <section class="dashboard-content">
+
+
+            <!-- Greeting -->
+
+            <div class="dashboard-header">
+
+                <div>
+
+                    <h1 id="greeting">
+                        Good afternoon, User
+                    </h1>
+
+                    <p>
+                        Here's how the business is performing today.
+                    </p>
+
+                </div>
+
+
+                <div class="header-actions">
+
+                    <button
+                        class="btn-secondary"
+                        id="export-btn">
+
+                        <i class="fa-regular fa-file-lines"></i>
+
+                        Export report
+
+                    </button>
+
+
+                    <button
+                        class="btn-primary"
+                        id="new-sale-btn">
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        New sale
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 STATISTICS
+            ================================== -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+
+                        <span
+                            class="growth positive"
+                            id="today-sales-growth">
+                            —
+                        </span>
+
+                    </div>
+
+                    <strong id="today-sales">
+                        $0.00
+                    </strong>
+
+                    <span>Today's Sales</span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+
+                        <span class="growth positive">—</span>
+
+                    </div>
+
+                    <strong id="today-profit">
+                        $0.00
+                    </strong>
+
+                    <span>Today's Profit</span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-chart-column"></i>
+                        </div>
+
+                        <span class="growth positive">—</span>
+
+                    </div>
+
+                    <strong id="weekly-sales">
+                        $0.00
+                    </strong>
+
+                    <span>Weekly Sales</span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+
+                        <span class="growth negative">—</span>
+
+                    </div>
+
+                    <strong id="weekly-profit">
+                        $0.00
+                    </strong>
+
+                    <span>Weekly Profit</span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-chart-simple"></i>
+                        </div>
+
+                        <span class="growth positive">—</span>
+
+                    </div>
+
+                    <strong id="monthly-sales">
+                        $0.00
+                    </strong>
+
+                    <span>Monthly Sales</span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+
+                        <span class="growth positive">—</span>
+
+                    </div>
+
+                    <strong id="monthly-profit">
+                        $0.00
+                    </strong>
+
+                    <span>Monthly Profit</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 TOTAL SALES
+            ================================== -->
+
+            <div class="total-sales-card">
+
+                <div>
+
+                    <span>Total Sales (All-time)</span>
+
+                    <h2 id="total-sales">
+                        $0.00
+                    </h2>
+
+                </div>
+
+
+                <div class="total-sales-info">
+
+                    <div>
+                        <span>Orders</span>
+                        <strong id="total-orders">0</strong>
+                    </div>
+
+                    <div>
+                        <span>Avg. order value</span>
+                        <strong id="average-order">$0.00</strong>
+                    </div>
+
+                    <div>
+                        <span>Active products</span>
+                        <strong id="active-products">0</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 CHARTS
+            ================================== -->
+
+            <div class="charts-grid">
+
+                <div class="panel chart-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h3>Sales Performance</h3>
+                            <p>Daily revenue, last 14 days</p>
+                        </div>
+
+                        <span class="period-badge">
+                            Last 14 days
+                        </span>
+
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="sales-chart"></canvas>
+                    </div>
+
+                </div>
+
+
+                <div class="panel chart-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h3>Profit Trend</h3>
+                            <p>Daily profit, last 14 days</p>
+                        </div>
+
+                        <span class="period-badge">
+                            Last 14 days
+                        </span>
+
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="profit-chart"></canvas>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 ALERTS
+            ================================== -->
+
+            <div class="small-panels-grid">
+
+                <div class="panel compact-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h3>Low Stock Alert</h3>
+                            <p>Products that need restocking soon</p>
+                        </div>
+
+                    </div>
+
+                    <div id="low-stock-list"
+                         class="compact-list">
+
+                        <div class="empty-state">
+                            No low-stock products.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel compact-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h3>Best-Selling Products</h3>
+                            <p>By units sold this month</p>
+                        </div>
+
+                    </div>
+
+                    <div id="best-selling-list"
+                         class="compact-list">
+
+                        <div class="empty-state">
+                            No sales data yet.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 RECENT
+            ================================== -->
+
+            <div class="bottom-grid">
+
+                <div class="panel recent-sales-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h3>Recent Sales</h3>
+                            <p>Latest transactions across all channels</p>
+                        </div>
+
+                        <button
+                            class="view-all"
+                            id="view-all-sales">
+                            View all
+                        </button>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>Invoice</th>
+                                    <th>Customer</th>
+                                    <th>Product</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th>Profit</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="recent-sales-body">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel activity-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h3>Recent Activity</h3>
+                            <p>System events</p>
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="activity-list"
+                        id="activity-list">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- Dashboard JavaScript -->
+<script src="dashboard.js"></script>
+
+</body>
+</html>
