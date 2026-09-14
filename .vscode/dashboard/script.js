@@ -190,6 +190,13 @@ function createUser(
         JSON.stringify(users)
     );
 
+    localStorage.setItem(
+  "accountProLoggedIn",
+  "true"
+);
+
+window.location.href = "dashboard.html";
+
 
     alert("Account created successfully! Please sign in.");
 
