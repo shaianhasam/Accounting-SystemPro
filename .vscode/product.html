@@ -1,553 +1,458 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>AccountPro - Product Management</title>
+    <title>AccountPro - Product Management</title>
 
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  />
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
 
-  <link rel="stylesheet" href="common.css" />
-  <link rel="stylesheet" href="product.css" />
+    <!-- Dashboard CSS (shared sidebar / navbar / base styles) -->
+    <link rel="stylesheet" href="dash.css">
+
+    <!-- Product Management specific styles -->
+    <link rel="stylesheet" href="products.css">
 </head>
 
 <body>
 
-  <div class="app-layout">
+<div class="app">
 
-    <!-- SIDEBAR -->
+    <!-- =========================================
+         SIDEBAR (identical to Dashboard)
+    ========================================== -->
+
     <aside class="sidebar" id="sidebar">
 
-      <div class="sidebar-logo">
-        <div class="logo-icon">
-          <i class="fa-solid fa-chart-pie"></i>
+        <div class="sidebar-top">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div>
+                    <strong>AccountPro</strong>
+                    <small>Accounting System</small>
+                </div>
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <a href="dashboard.html"
+                   class="nav-item">
+
+                    <i class="fa-solid fa-grip-2"></i>
+                    <span>Dashboard</span>
+
+                </a>
+
+
+                <a href="product.html" class="nav-item active">
+                    <i class="fa-solid fa-box"></i>
+                    <span>Product Management</span>
+                </a>
+
+
+                <a href="#"
+                   class="nav-item future-link"
+                   data-module="Sales History">
+
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Sales History</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="nav-item future-link"
+                   data-module="Reports">
+
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Reports</span>
+
+                </a>
+
+
+                <a href="#"
+                   class="nav-item future-link"
+                   data-module="Settings">
+
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+
+                </a>
+
+            </nav>
+
         </div>
 
-        <div class="logo-text">
-          Account<span>Pro</span>
+
+        <div class="sidebar-bottom">
+
+            <button class="sidebar-action" id="dark-mode-btn">
+
+                <i class="fa-regular fa-sun" id="theme-icon"></i>
+
+                <span>Dark mode</span>
+
+            </button>
+
+
+            <button class="sidebar-action logout-btn" id="logout-btn">
+
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </button>
+
         </div>
-      </div>
-
-      <nav class="sidebar-menu">
-
-        <div class="sidebar-section-title">
-          Main Menu
-        </div>
-
-        <a
-          href="dashboard.html"
-          class="nav-item"
-        >
-          <i class="fa-solid fa-table-columns"></i>
-          <span>Dashboard</span>
-        </a>
-
-        <a
-          href="product.html"
-          class="nav-item active"
-        >
-          <i class="fa-solid fa-box"></i>
-          <span>Product Management</span>
-        </a>
-
-        <a
-          href="sales.html"
-          class="nav-item"
-        >
-          <i class="fa-solid fa-cart-shopping"></i>
-          <span>Sales History</span>
-        </a>
-
-        <a
-          href="reports.html"
-          class="nav-item"
-        >
-          <i class="fa-solid fa-chart-line"></i>
-          <span>Reports</span>
-        </a>
-
-        <div class="sidebar-section-title">
-          System
-        </div>
-
-        <a
-          href="settings.html"
-          class="nav-item"
-        >
-          <i class="fa-solid fa-gear"></i>
-          <span>Settings</span>
-        </a>
-
-      </nav>
-
-      <div class="sidebar-bottom">
-        <a
-          href="#"
-          class="nav-item logout-btn"
-          id="logoutBtn"
-        >
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span>Logout</span>
-        </a>
-      </div>
 
     </aside>
 
-    <div
-      class="sidebar-overlay"
-      id="sidebarOverlay"
-    ></div>
 
-    <!-- MAIN AREA -->
-    <main class="main-area">
+    <!-- =========================================
+         MAIN
+    ========================================== -->
 
-      <!-- NAVBAR -->
-      <header class="top-navbar">
+    <main class="main-content">
 
-        <div class="navbar-left">
+        <!-- =====================================
+             TOP NAVBAR (identical to Dashboard)
+        ====================================== -->
 
-          <button
-            class="mobile-menu-btn"
-            id="mobileMenuBtn"
-            type="button"
-          >
-            <i class="fa-solid fa-bars"></i>
-          </button>
+        <header class="topbar">
 
-          <h2 class="page-title">
-            Product Management
-          </h2>
+            <div class="search-container">
 
-        </div>
-
-        <div class="navbar-right">
-
-          <button
-            class="navbar-icon-btn dark-mode-btn"
-            id="darkModeBtn"
-            type="button"
-            title="Toggle dark mode"
-          >
-            <i class="fa-solid fa-moon"></i>
-          </button>
-
-          <div class="notification-wrapper">
-
-            <button
-              class="navbar-icon-btn notification-btn"
-              id="notificationBtn"
-              type="button"
-              title="Notifications"
-            >
-              <i class="fa-regular fa-bell"></i>
-
-              <span
-                class="notification-badge"
-                id="notificationCount"
-              >
-                0
-              </span>
-            </button>
-
-            <div
-              class="notification-panel"
-              id="notificationPanel"
-            ></div>
-
-          </div>
-
-          <div class="user-profile">
-
-            <div
-              class="user-avatar"
-              id="userAvatar"
-              data-user-avatar
-            >
-              U
-            </div>
-
-            <div class="user-details">
-
-              <span
-                class="user-name"
-                id="userName"
-                data-user-name
-              >
-                User
-              </span>
-
-              <span
-                class="user-role"
-                id="userRole"
-                data-user-role
-              >
-                Admin
-              </span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </header>
-
-      <!-- PRODUCT CONTENT -->
-      <section class="page-content">
-
-        <div class="content-header">
-          <div>
-            <h1>Product Management</h1>
-            <p>Manage your products, stock and pricing.</p>
-          </div>
-
-          <button
-            class="btn btn-primary"
-            id="openProductFormBtn"
-            type="button"
-          >
-            <i class="fa-solid fa-plus"></i>
-            Add Product
-          </button>
-        </div>
-
-        <!-- SUMMARY CARDS -->
-        <div class="product-summary-grid">
-
-          <div class="summary-card">
-            <div class="summary-card-icon purple">
-              <i class="fa-solid fa-boxes-stacked"></i>
-            </div>
-
-            <div>
-              <p>Total Products</p>
-              <h3 id="totalProductsCount">0</h3>
-            </div>
-          </div>
-
-          <div class="summary-card">
-            <div class="summary-card-icon orange">
-              <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-
-            <div>
-              <p>Low Stock Items</p>
-              <h3 id="lowStockCount">0</h3>
-            </div>
-          </div>
-
-          <div class="summary-card">
-            <div class="summary-card-icon green">
-              <i class="fa-solid fa-circle-check"></i>
-            </div>
-
-            <div>
-              <p>Available Items</p>
-              <h3 id="availableProductsCount">0</h3>
-            </div>
-          </div>
-
-          <div class="summary-card">
-            <div class="summary-card-icon red">
-              <i class="fa-solid fa-circle-xmark"></i>
-            </div>
-
-            <div>
-              <p>Out of Stock</p>
-              <h3 id="outOfStockCount">0</h3>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- PRODUCT FORM -->
-        <section
-          class="product-form-card"
-          id="productFormCard"
-        >
-
-          <div class="section-heading">
-            <div>
-              <h2 id="productFormTitle">Add New Product</h2>
-              <p>Enter product details below.</p>
-            </div>
-          </div>
-
-          <form id="productForm">
-
-            <input
-              type="hidden"
-              id="editingProductId"
-            />
-
-            <div class="form-grid">
-
-              <div class="form-group">
-                <label
-                  class="form-label"
-                  for="productName"
-                >
-                  Product Name
-                </label>
-
-                <input
-                  class="form-control"
-                  type="text"
-                  id="productName"
-                  placeholder="e.g. Coca Cola"
-                  required
-                />
-              </div>
-
-              <div class="form-group">
-                <label
-                  class="form-label"
-                  for="productCategory"
-                >
-                  Category
-                </label>
-
-                <select
-                  class="form-select"
-                  id="productCategory"
-                  required
-                >
-                  <option value="">Select category</option>
-                  <option value="Beverages">Beverages</option>
-                  <option value="Food">Food</option>
-                  <option value="Snacks">Snacks</option>
-                  <option value="Dairy">Dairy</option>
-                  <option value="Household">Household</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label
-                  class="form-label"
-                  for="purchasePrice"
-                >
-                  Purchase Price
-                </label>
-
-                <input
-                  class="form-control"
-                  type="number"
-                  id="purchasePrice"
-                  min="0"
-                  step="0.01"
-                  placeholder="0.00"
-                  required
-                />
-              </div>
-
-              <div class="form-group">
-                <label
-                  class="form-label"
-                  for="sellingPrice"
-                >
-                  Selling Price
-                </label>
-
-                <input
-                  class="form-control"
-                  type="number"
-                  id="sellingPrice"
-                  min="0"
-                  step="0.01"
-                  placeholder="0.00"
-                  required
-                />
-              </div>
-
-              <div class="form-group">
-                <label
-                  class="form-label"
-                  for="stockQuantity"
-                >
-                  Stock Quantity
-                </label>
-
-                <input
-                  class="form-control"
-                  type="number"
-                  id="stockQuantity"
-                  min="0"
-                  step="1"
-                  placeholder="0"
-                  required
-                />
-              </div>
-
-              <div class="form-group">
-                <label
-                  class="form-label"
-                  for="lowStockWarning"
-                >
-                  Low Stock Alert At
-                </label>
-
-                <input
-                  class="form-control"
-                  type="number"
-                  id="lowStockWarning"
-                  min="0"
-                  step="1"
-                  value="5"
-                  required
-                />
-              </div>
-
-              <div class="form-group form-group-full">
-                <label
-                  class="form-label"
-                  for="productImage"
-                >
-                  Product Image
-                </label>
-
-                <input
-                  class="form-control"
-                  type="file"
-                  id="productImage"
-                  accept="image/*"
-                />
-              </div>
-
-            </div>
-
-            <div class="form-actions">
-
-              <button
-                type="button"
-                class="btn btn-secondary"
-                id="cancelProductBtn"
-              >
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                class="btn btn-primary"
-                id="productSubmitBtn"
-              >
-                <i class="fa-solid fa-plus"></i>
-                Save Product
-              </button>
-
-            </div>
-
-          </form>
-
-        </section>
-
-        <!-- PRODUCTS TABLE -->
-        <section class="products-table-card">
-
-          <div class="section-heading table-heading">
-
-            <div>
-              <h2>All Products</h2>
-              <p id="productsShowingText">
-                Showing 0 products
-              </p>
-            </div>
-
-            <div class="table-tools">
-
-              <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
 
                 <input
-                  type="search"
-                  id="productSearch"
-                  placeholder="Search products..."
-                />
-              </div>
+                    type="text"
+                    id="global-search"
+                    placeholder="Search invoices, products, customers..."
+                    autocomplete="off"
+                >
 
-              <select
-                class="form-select filter-select"
-                id="categoryFilter"
-              >
-                <option value="all">All Categories</option>
-                <option value="Beverages">Beverages</option>
-                <option value="Food">Food</option>
-                <option value="Snacks">Snacks</option>
-                <option value="Dairy">Dairy</option>
-                <option value="Household">Household</option>
-                <option value="Other">Other</option>
-              </select>
-
-              <select
-                class="form-select filter-select"
-                id="statusFilter"
-              >
-                <option value="all">All Status</option>
-                <option value="In Stock">In Stock</option>
-                <option value="Low Stock">Low Stock</option>
-                <option value="Out of Stock">Out of Stock</option>
-              </select>
-
-              <button
-                class="btn btn-secondary"
-                id="clearFiltersBtn"
-                type="button"
-              >
-                Clear
-              </button>
+                <div
+                    class="search-results"
+                    id="search-results">
+                </div>
 
             </div>
 
-          </div>
 
-          <div class="table-responsive">
+            <div class="topbar-right">
 
-            <table class="products-table">
+                <!-- Notification -->
 
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Category</th>
-                  <th>Purchase Price</th>
-                  <th>Selling Price</th>
-                  <th>Stock</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
+                <div class="notification-wrapper">
 
-              <tbody id="productsTableBody"></tbody>
+                    <button
+                        class="notification-btn"
+                        id="notification-btn"
+                        aria-label="Notifications">
 
-            </table>
+                        <i class="fa-regular fa-bell"></i>
 
-          </div>
+                        <span
+                            class="notification-count"
+                            id="notification-count">
+                            0
+                        </span>
 
-          <div
-            class="empty-products-state"
-            id="emptyProductsState"
-          >
-            <i class="fa-solid fa-box-open"></i>
-            <h3>No Products Found</h3>
-            <p>Add your first product to see it here.</p>
-          </div>
+                    </button>
+
+
+                    <div
+                        class="notification-panel"
+                        id="notification-panel">
+
+                        <div class="notification-header">
+
+                            <strong>Notifications</strong>
+
+                            <button id="mark-all-read">
+                                Mark all read
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="notification-list"
+                            id="notification-list">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- User -->
+
+                <div class="navbar-user">
+
+                    <div
+                        class="user-avatar"
+                        id="user-avatar">
+                        U
+                    </div>
+
+                    <div class="user-info">
+
+                        <strong id="navbar-user-name">
+                            User
+                        </strong>
+
+                        <span>Finance Admin</span>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="mobile-menu"
+                    id="mobile-menu">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================
+             PRODUCT MANAGEMENT CONTENT
+        ====================================== -->
+
+        <section class="dashboard-content">
+
+            <!-- Header + summary cards -->
+            <div class="dashboard-header pm-header">
+
+                <div>
+                    <h1>Product Management</h1>
+                    <p>Add, edit and manage your store products</p>
+                </div>
+
+                <div class="pm-stats">
+
+                    <div class="stat-card mini">
+                        <div class="stat-top">
+                            <div class="stat-icon blue"><i class="fa-solid fa-box"></i></div>
+                        </div>
+                        <strong id="s-total">0</strong>
+                        <span>Total Products</span>
+                    </div>
+
+                    <div class="stat-card mini">
+                        <div class="stat-top">
+                            <div class="stat-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        </div>
+                        <strong id="s-low">0</strong>
+                        <span>Low Stock Items</span>
+                    </div>
+
+                    <div class="stat-card mini">
+                        <div class="stat-top">
+                            <div class="stat-icon green"><i class="fa-solid fa-check"></i></div>
+                        </div>
+                        <strong id="s-avail">0</strong>
+                        <span>Available Items</span>
+                    </div>
+
+                    <div class="stat-card mini">
+                        <div class="stat-top">
+                            <div class="stat-icon red"><i class="fa-solid fa-xmark"></i></div>
+                        </div>
+                        <strong id="s-out">0</strong>
+                        <span>Out of Stock</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Add product -->
+            <div class="panel add-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>Add New Product</h3>
+                    </div>
+                </div>
+
+                <form id="product-form" class="prod-form" novalidate>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="p-name">Product Name</label>
+                            <input type="text" id="p-name" placeholder="Enter product name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="p-category">Category</label>
+                            <select id="p-category">
+                                <option value="">Select category</option>
+                                <option>Beverages</option>
+                                <option>Food</option>
+                                <option>Snacks</option>
+                                <option>Dairy</option>
+                                <option>Grains</option>
+                                <option>Household</option>
+                                <option>Personal Care</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="p-cost">Purchase Price</label>
+                            <input type="number" id="p-cost" min="0" step="0.01" placeholder="$ 0.00">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="p-price">Selling Price</label>
+                            <input type="number" id="p-price" min="0" step="0.01" placeholder="$ 0.00">
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="p-stock">Stock Quantity</label>
+                            <input type="number" id="p-stock" min="0" step="1" placeholder="Enter quantity">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="p-min">Low Stock Warning</label>
+                            <input type="number" id="p-min" min="0" step="1" placeholder="Enter low stock limit">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="p-image">Product Image (Optional)</label>
+                            <input type="file" id="p-image" accept="image/*">
+                        </div>
+
+                        <div class="form-group form-actions">
+                            <button type="submit" class="btn-primary" id="p-submit">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Add Product</span>
+                            </button>
+                            <button type="button" class="btn-secondary" id="p-cancel" style="display:none;">
+                                Cancel
+                            </button>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- Filters -->
+            <div class="filters-bar">
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="f-search" placeholder="Search products..." autocomplete="off">
+                </div>
+
+                <select id="f-category">
+                    <option value="">All Categories</option>
+                    <option>Beverages</option>
+                    <option>Food</option>
+                    <option>Snacks</option>
+                    <option>Dairy</option>
+                    <option>Grains</option>
+                    <option>Household</option>
+                    <option>Personal Care</option>
+                    <option>Other</option>
+                </select>
+
+                <select id="f-status">
+                    <option value="">All Status</option>
+                    <option>In Stock</option>
+                    <option>Low Stock</option>
+                    <option>Out of Stock</option>
+                </select>
+
+                <button class="btn-secondary" id="f-clear">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    Clear Filters
+                </button>
+
+                <button class="btn-primary" id="f-apply">
+                    <i class="fa-solid fa-filter"></i>
+                    Filter
+                </button>
+
+            </div>
+
+
+            <!-- All products table -->
+            <div class="panel table-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>All Products</h3>
+                        <p>Every product saved in your store</p>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Image</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Purchase Price</th>
+                                <th>Selling Price</th>
+                                <th>Stock</th>
+                                <th>Low Stock Warning</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="prod-body"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="pagination" id="pagination"></div>
+
+            </div>
 
         </section>
 
-      </section>
-
     </main>
 
-  </div>
+</div>
 
-  <script src="app-common.js"></script>
-  <script src="product.js"></script>
+
+<!-- Product Management JavaScript -->
+<script src="product.js"></script>
 
 </body>
 </html>
