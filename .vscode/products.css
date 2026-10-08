@@ -1,9 +1,28 @@
-/* ==========================================
-   PRODUCT MANAGEMENT
-   Extends dash.css - reuses its variables,
-   .panel, .stat-card, .btn-primary/secondary,
-   table and .status base styles.
-========================================== */
+/* ==========================================================
+   PRODUCT MANAGEMENT PAGE STYLES
+   --------------------------------------------------------
+   This file ONLY adds what dash.css does not already have.
+   Reused as-is from dash.css: CSS variables (--primary,
+   --border, --text, --shadow ...), .panel, .panel-header,
+   .stat-card, .stat-icon (blue/purple), .btn-primary,
+   .btn-secondary, table/th/td, .status, .empty-state, and
+   all dark-mode rules for those shared classes.
+
+   Section order below matches the page top to bottom:
+     1. Header + summary cards
+     2. Add Product panel/form
+     3. Filters bar
+     4. Products table
+     5. Pagination
+     6. Dark mode (page-specific classes only)
+     7. Responsive
+     8. Desktop size-up (matches dash.css >1100px rule)
+   ========================================================== */
+
+
+/* ----------------------------------------
+   1. HEADER + SUMMARY CARDS
+---------------------------------------- */
 
 .pm-header {
     align-items: flex-start;
@@ -21,6 +40,8 @@
     padding: 9px 11px;
 }
 
+/* dash.css only ships blue/purple stat-icon colors -
+   Product Management needs two more for its 4 cards */
 .stat-icon.green {
     background: #e8faf4;
     color: #20a77d;
@@ -37,9 +58,9 @@
 }
 
 
-/* ==========================================
-   ADD PRODUCT PANEL
-========================================== */
+/* ----------------------------------------
+   2. ADD PRODUCT PANEL / FORM
+---------------------------------------- */
 
 .add-panel {
     margin-top: 11px;
@@ -106,9 +127,9 @@
 }
 
 
-/* ==========================================
-   FILTERS BAR
-========================================== */
+/* ----------------------------------------
+   3. FILTERS BAR
+---------------------------------------- */
 
 .filters-bar {
     display: flex;
@@ -120,6 +141,20 @@
     padding: 9px 11px;
     margin-top: 10px;
     flex-wrap: wrap;
+}
+
+.filters-bar select {
+    height: 29px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0 8px;
+    font-size: 9px;
+    background: #fff;
+    color: var(--text);
+}
+
+.filters-bar button {
+    white-space: nowrap;
 }
 
 .search-box {
@@ -149,24 +184,10 @@
     color: var(--text);
 }
 
-.filters-bar select {
-    height: 29px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0 8px;
-    font-size: 9px;
-    background: #fff;
-    color: var(--text);
-}
 
-.filters-bar button {
-    white-space: nowrap;
-}
-
-
-/* ==========================================
-   TABLE PANEL
-========================================== */
+/* ----------------------------------------
+   4. PRODUCTS TABLE
+---------------------------------------- */
 
 .table-panel {
     margin-top: 10px;
@@ -237,10 +258,14 @@
     color: #ef6b76;
 }
 
+.act-btn.restock {
+    color: #20a77d;
+}
 
-/* ==========================================
-   PAGINATION
-========================================== */
+
+/* ----------------------------------------
+   5. PAGINATION
+---------------------------------------- */
 
 .pagination {
     display: flex;
@@ -282,9 +307,11 @@
 }
 
 
-/* ==========================================
-   DARK MODE
-========================================== */
+/* ----------------------------------------
+   6. DARK MODE (page-specific classes only -
+      shared classes are already handled by
+      dash.css's own body.dark rules)
+---------------------------------------- */
 
 body.dark .form-group input,
 body.dark .form-group select,
@@ -305,6 +332,11 @@ body.dark .cat-badge {
     color: #c7cedb;
 }
 
+body.dark .act-btn {
+    background: #1f2937;
+    border-color: #374151;
+}
+
 body.dark .pg-btn {
     background: #1f2937;
     color: #c7cedb;
@@ -316,15 +348,10 @@ body.dark .prod-thumb-fallback {
     color: #9db1f5;
 }
 
-body.dark .act-btn {
-    background: #1f2937;
-    border-color: #374151;
-}
 
-
-/* ==========================================
-   RESPONSIVE
-========================================== */
+/* ----------------------------------------
+   7. RESPONSIVE
+---------------------------------------- */
 
 @media (max-width: 900px) {
 
@@ -364,9 +391,12 @@ body.dark .act-btn {
 }
 
 
-/* ==========================================
-   DESKTOP SIZE-UP (matches dash.css >1100px)
-========================================== */
+/* ----------------------------------------
+   8. DESKTOP SIZE-UP
+      (matches dash.css's own >1100px rule,
+      so this page scales up in step with
+      the Dashboard/Sidebar/Navbar)
+---------------------------------------- */
 
 @media (min-width: 1101px) {
 

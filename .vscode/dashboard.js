@@ -2,6 +2,7 @@
    ACCOUNT PRO
    DASHBOARD.JS
    LOCAL STORAGE VERSION - PER ACCOUNT DATA
+   + supports multi-item POS sales (sales.html)
    ========================================================= */
 
 (function () {
@@ -62,20 +63,7 @@
 
 
         /* =================================================
-           LOCAL STORAGE KEYS
-           ---------------------------------------------------
-           Products / sales / notifications / activities are
-           now stored per-account. Each "*Store" key holds an
-           OBJECT keyed by the current user's unique id:
-
-           accountProProductsByUser = {
-               "user_1@mail.com": [ ...products ],
-               "user_2@mail.com": [ ...products ]
-           }
-
-           This replaces the old single global arrays
-           ("products", "sales") that were shared by every
-           account.
+           LOCAL STORAGE KEYS (per account)
         ================================================= */
 
         const KEYS = {
@@ -112,9 +100,6 @@
 
         /* =================================================
            ACCOUNT ID
-           A reliable, stable identifier for the logged-in
-           account. Falls back gracefully depending on what
-           the login/signup system actually stored.
         ================================================= */
 
         function getUserId(user) {
@@ -171,13 +156,6 @@
 
         /* =================================================
            ONE-TIME MIGRATION FROM OLD GLOBAL STORAGE
-           ---------------------------------------------------
-           Older versions of this app saved one shared
-           "products" / "sales" array for every account. The
-           first account to load the app after this update
-           claims that legacy data (since it was created by
-           whoever was testing/using the app), then the flag
-           is set so no other account ever receives it again.
         ================================================= */
 
         function migrateLegacyData() {
@@ -230,6 +208,20 @@
             ).trim();
 
             if (nameEl) nameEl.textContent = fullName;
+
+            const tipEl = $("user-tooltip");
+            if (tipEl) tipEl.textContent = fullName + " \u00b7 Finance Admin";
+
+            const navUser = document.querySelector(".navbar-user");
+            if (navUser) {
+                navUser.addEventListener("click", function (event) {
+                    event.stopPropagation();
+                    navUser.classList.toggle("show-tooltip");
+                });
+                document.addEventListener("click", function () {
+                    navUser.classList.remove("show-tooltip");
+                });
+            }
 
             if (avatarEl) {
 
@@ -296,8 +288,7 @@
 
 
         /* =================================================
-           THEME (kept global on purpose - shared across
-           pages/accounts on this browser, same as before)
+           THEME (global, shared across pages/accounts)
         ================================================= */
 
         const darkModeBtn = $("dark-mode-btn");
@@ -436,14 +427,12 @@
         /* =================================================
            SALES HELPERS
            ---------------------------------------------------
-           A sale ONLY represents a completed transaction.
-           Revenue = sellingPrice * quantity
-           Cost    = purchasePrice * quantity
-           Profit  = Revenue - Cost
-           These are computed strictly from the sale record
-           itself (which is filled in from the real product
-           at the moment the sale is created - see "NEW SALE"
-           below) - never from a random/mock fallback.
+           A sale created by the POS (sales.html) already
+           carries precomputed revenue / cost / profit and a
+           multi-product "items" array. Older single-item
+           sales (created by a previous version of this
+           button) are still supported as a fallback so no
+           historical data is lost.
         ================================================= */
 
         function saleDate(sale) {
@@ -455,19 +444,58 @@
         }
 
         function saleRevenue(sale) {
+            if (typeof sale.revenue === "number") return sale.revenue;
             const quantity = saleQuantity(sale);
             const price = Number(sale.sellingPrice) || 0;
             return quantity * price;
         }
 
         function saleCost(sale) {
+            if (typeof sale.cost === "number") return sale.cost;
             const quantity = saleQuantity(sale);
             const cost = Number(sale.costPrice) || 0;
             return quantity * cost;
         }
 
         function saleProfit(sale) {
+            if (typeof sale.profit === "number") return sale.profit;
             return saleRevenue(sale) - saleCost(sale);
+        }
+
+        function saleTotalCharged(sale) {
+            if (typeof sale.total === "number") return sale.total;
+            return saleRevenue(sale);
+        }
+
+        function saleItemsList(sale) {
+            if (Array.isArray(sale.items) && sale.items.length) return sale.items;
+
+            if (sale.product || sale.productName) {
+                return [{
+                    name: sale.product || sale.productName,
+                    quantity: saleQuantity(sale),
+                    sellingPrice: Number(sale.sellingPrice) || 0,
+                    purchasePrice: Number(sale.costPrice) || 0,
+                    total: saleRevenue(sale)
+                }];
+            }
+
+            return [];
+        }
+
+        function saleItemsSummary(sale) {
+            const items = saleItemsList(sale);
+            if (items.length === 0) return "-";
+
+            const first = items[0].name || "Item";
+            return items.length > 1
+                ? `${first} +${items.length - 1} more`
+                : first;
+        }
+
+        function saleQuantityTotal(sale) {
+            const items = saleItemsList(sale);
+            return items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
         }
 
 
@@ -611,19 +639,27 @@
                 const date = saleDate(sale);
                 if (!isThisMonth(date)) continue;
 
-                const name = String(sale.product || sale.productName || "Unknown product");
-                const quantity = saleQuantity(sale);
-                const revenue = saleRevenue(sale);
-                const profit = saleProfit(sale);
+                for (const item of saleItemsList(sale)) {
 
-                if (!map.has(name)) {
-                    map.set(name, { name, quantity: 0, revenue: 0, profit: 0 });
+                    const name = String(item.name || "Unknown product");
+                    const quantity = Number(item.quantity) || 0;
+
+                    const revenue = (typeof item.total === "number")
+                        ? item.total
+                        : quantity * (Number(item.sellingPrice) || 0);
+
+                    const cost = quantity * (Number(item.purchasePrice) || 0);
+                    const profit = revenue - cost;
+
+                    if (!map.has(name)) {
+                        map.set(name, { name, quantity: 0, revenue: 0, profit: 0 });
+                    }
+
+                    const entry = map.get(name);
+                    entry.quantity += quantity;
+                    entry.revenue += revenue;
+                    entry.profit += profit;
                 }
-
-                const item = map.get(name);
-                item.quantity += quantity;
-                item.revenue += revenue;
-                item.profit += profit;
             }
 
             const best = Array.from(map.values())
@@ -681,11 +717,11 @@
 
             body.innerHTML = recent.map(sale => {
 
-                const invoice = sale.invoice || "-";
+                const invoice = sale.id || sale.invoice || "-";
                 const customer = sale.customer || "-";
-                const product = sale.product || sale.productName || "-";
-                const quantity = saleQuantity(sale);
-                const total = saleRevenue(sale);
+                const product = saleItemsSummary(sale);
+                const quantity = saleQuantityTotal(sale);
+                const total = saleTotalCharged(sale);
                 const profit = saleProfit(sale);
                 const date = saleDate(sale);
 
@@ -814,33 +850,6 @@
             });
         }
 
-        function pushNotification(title, message) {
-            const notifications = getUserArray(KEYS.notificationsStore, uid);
-
-            notifications.unshift({
-                id: "notification-" + Date.now(),
-                title,
-                message,
-                read: false,
-                date: new Date().toISOString()
-            });
-
-            setUserArray(KEYS.notificationsStore, uid, notifications.slice(0, 50));
-        }
-
-        function logActivity(title, message) {
-            const activities = getUserArray(KEYS.activitiesStore, uid);
-
-            activities.unshift({
-                id: "activity-" + Date.now(),
-                title,
-                message,
-                date: new Date().toISOString()
-            });
-
-            setUserArray(KEYS.activitiesStore, uid, activities.slice(0, 50));
-        }
-
 
         /* =================================================
            NOTIFICATION BUTTON
@@ -917,16 +926,16 @@
 
             for (const sale of sales) {
 
-                const invoice = String(sale.invoice || "");
+                const invoice = String(sale.id || sale.invoice || "");
                 const customer = String(sale.customer || "");
-                const product = String(sale.product || sale.productName || "");
+                const items = saleItemsSummary(sale);
 
                 if (
                     invoice.toLowerCase().includes(keyword) ||
                     customer.toLowerCase().includes(keyword) ||
-                    product.toLowerCase().includes(keyword)
+                    String(items).toLowerCase().includes(keyword)
                 ) {
-                    results.push({ type: "Sale", title: invoice || customer || product, data: sale });
+                    results.push({ type: "Sale", title: invoice || customer, data: sale });
                 }
             }
 
@@ -963,9 +972,9 @@
                 );
             } else {
                 window.alert(
-                    "Invoice: " + (data.invoice || "-") +
+                    "Invoice: " + (data.id || data.invoice || "-") +
                     "\nCustomer: " + (data.customer || "-") +
-                    "\nTotal: " + money(saleRevenue(data))
+                    "\nTotal: " + money(saleTotalCharged(data))
                 );
             }
 
@@ -1008,16 +1017,16 @@
                 }
 
                 const rows = [
-                    ["Invoice", "Customer", "Product", "Quantity", "Total", "Profit", "Date", "Status"]
+                    ["Invoice", "Customer", "Items", "Quantity", "Total", "Profit", "Date", "Status"]
                 ];
 
                 sales.forEach(sale => {
                     rows.push([
-                        sale.invoice || "",
+                        sale.id || sale.invoice || "",
                         sale.customer || "",
-                        sale.product || sale.productName || "",
-                        saleQuantity(sale),
-                        saleRevenue(sale),
+                        saleItemsSummary(sale),
+                        saleQuantityTotal(sale),
+                        saleTotalCharged(sale),
                         saleProfit(sale),
                         saleDate(sale)?.toLocaleString() || "",
                         sale.status || "Completed"
@@ -1046,108 +1055,16 @@
         /* =================================================
            NEW SALE
            ---------------------------------------------------
-           A sale must always be linked to a REAL product from
-           the current account's own inventory. Selling price
-           and purchase price are pulled from that product -
-           never typed in manually - so revenue/cost/profit are
-           always internally consistent with the inventory.
+           Sale creation now happens on the full POS page
+           (sales.html), which supports multiple products,
+           discount, tax, payment method and invoice printing.
         ================================================= */
 
         const newSaleBtn = $("new-sale-btn");
 
         if (newSaleBtn) {
-
             newSaleBtn.addEventListener("click", function () {
-
-                const products = getUserArray(KEYS.productsStore, uid);
-
-                if (products.length === 0) {
-                    window.alert(
-                        "You don't have any products yet.\n" +
-                        "Add a product first from Product Management, then record a sale."
-                    );
-                    return;
-                }
-
-                const availableList = products
-                    .map(p => `- ${p.name} (${Number(p.stock) || 0} in stock)`)
-                    .join("\n");
-
-                const productName = window.prompt(
-                    "Which product was sold? Type the exact name.\n\n" + availableList
-                );
-
-                if (!productName || !productName.trim()) return;
-
-                const product = products.find(
-                    item => String(item.name || "").toLowerCase() === productName.trim().toLowerCase()
-                );
-
-                if (!product) {
-                    window.alert("That product was not found in your inventory.");
-                    return;
-                }
-
-                const stock = Number(product.stock) || 0;
-
-                if (stock <= 0) {
-                    window.alert(`"${product.name}" is out of stock.`);
-                    return;
-                }
-
-                const customer = window.prompt("Customer name:", "Walk-in Customer") || "Walk-in Customer";
-
-                const quantity = Number(window.prompt(`Quantity (max ${stock}):`, "1"));
-
-                if (!Number.isFinite(quantity) || quantity <= 0) {
-                    window.alert("Invalid quantity.");
-                    return;
-                }
-
-                if (quantity > stock) {
-                    window.alert(`Only ${stock} unit(s) of "${product.name}" are in stock.`);
-                    return;
-                }
-
-                const sellingPrice = Number(product.price) || 0;
-                const costPrice = Number(product.costPrice) || 0;
-
-                const now = new Date();
-                const invoice = "INV-" + now.getTime();
-
-                const sale = {
-                    id: "sale-" + now.getTime(),
-                    invoice,
-                    customer,
-                    productId: product.id,
-                    product: product.name,
-                    quantity,
-                    sellingPrice,
-                    costPrice,
-                    status: "Completed",
-                    date: now.toISOString(),
-                    createdAt: now.toISOString()
-                };
-
-                const sales = getUserArray(KEYS.salesStore, uid);
-                sales.push(sale);
-                setUserArray(KEYS.salesStore, uid, sales);
-
-                // Decrease stock on the real product record
-                const productIndex = products.findIndex(p => p.id === product.id);
-                if (productIndex !== -1) {
-                    products[productIndex].stock = Math.max(0, stock - quantity);
-                    setUserArray(KEYS.productsStore, uid, products);
-                }
-
-                const revenue = saleRevenue(sale);
-
-                logActivity("New sale created", `${product.name} · ${money(revenue)}`);
-                pushNotification("New sale", `${product.name} sold for ${money(revenue)}`);
-
-                refreshDashboard();
-
-                window.alert("Sale recorded successfully.\nInvoice: " + invoice);
+                window.location.href = "sales.html";
             });
         }
 
@@ -1161,22 +1078,7 @@
         if (viewAllSales) {
 
             viewAllSales.addEventListener("click", function () {
-
-                const sales = getUserArray(KEYS.salesStore, uid);
-
-                if (sales.length === 0) {
-                    window.alert("No sales found.");
-                    return;
-                }
-
-                let text = "Recent Sales\n\n";
-
-                sales.slice().reverse().slice(0, 10).forEach(sale => {
-                    text += (sale.invoice || "-") + " | " + (sale.product || "-") +
-                        " | " + money(saleRevenue(sale)) + "\n";
-                });
-
-                window.alert(text);
+                window.location.href = "sales-history.html";
             });
         }
 
@@ -1438,3 +1340,17 @@
     }
 
 })();
+
+/* =================================================
+   BFCACHE GUARD
+   If the browser restores this page from back/forward
+   cache (e.g. user clicks Back instead of a sidebar
+   link), the page can show a frozen snapshot from
+   before data changed elsewhere. Force a fresh reload
+   in that case so stock/status/notifications are current.
+================================================= */
+window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});

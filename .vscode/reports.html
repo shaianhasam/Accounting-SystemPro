@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AccountPro - Reports</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="dash.css">
+    <link rel="stylesheet" href="reports.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================================
+         SIDEBAR (identical to Dashboard)
+    ========================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-top">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div>
+                    <strong>AccountPro</strong>
+                    <small>Accounting System</small>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="product.html" class="nav-item">
+                    <i class="fa-solid fa-box"></i>
+                    <span>Product Management</span>
+                </a>
+
+                <a href="sales.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Sales History</span>
+                </a>
+
+                <a href="reports.html" class="nav-item active">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Reports</span>
+                </a>
+
+                <a href="#" class="nav-item future-link" data-module="Settings">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+
+            </nav>
+
+        </div>
+
+        <div class="sidebar-bottom">
+            <button class="sidebar-action" id="dark-mode-btn">
+                <i class="fa-regular fa-sun" id="theme-icon"></i>
+                <span>Dark mode</span>
+            </button>
+            <button class="sidebar-action logout-btn" id="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="global-search" placeholder="Search invoices, products, customers..." autocomplete="off">
+                <div class="search-results" id="search-results"></div>
+            </div>
+
+            <div class="topbar-right">
+
+                <div class="notification-wrapper">
+                    <button class="notification-btn" id="notification-btn" aria-label="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-count" id="notification-count">0</span>
+                    </button>
+                    <div class="notification-panel" id="notification-panel">
+                        <div class="notification-header">
+                            <strong>Notifications</strong>
+                            <button id="mark-all-read">Mark all read</button>
+                        </div>
+                        <div class="notification-list" id="notification-list"></div>
+                    </div>
+                </div>
+
+                <div class="navbar-user">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-info">
+                        <strong id="navbar-user-name">User</strong>
+                        <span>Finance Admin</span>
+                    </div>
+                    <div class="user-tooltip" id="user-tooltip">User</div>
+                </div>
+
+                <button class="mobile-menu" id="mobile-menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <section class="dashboard-content">
+
+            <div class="dashboard-header rp-header">
+
+                <div>
+                    <h1>Reports</h1>
+                    <p>View detailed insights and performance reports</p>
+                </div>
+
+                <div class="rp-header-actions">
+
+                    <div class="range-picker" id="range-picker">
+
+                        <button class="range-btn" id="range-btn">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span id="range-label">Last 7 days</span>
+                            <i class="fa-solid fa-chevron-down range-caret"></i>
+                        </button>
+
+                        <div class="range-pop" id="range-pop">
+
+                            <div class="range-presets">
+                                <button type="button" class="range-preset" data-preset="7">Last 7 days</button>
+                                <button type="button" class="range-preset" data-preset="30">Last 30 days</button>
+                                <button type="button" class="range-preset" data-preset="month">This month</button>
+                            </div>
+
+                            <div class="range-custom">
+                                <div class="form-group">
+                                    <label>From</label>
+                                    <input type="date" id="range-from">
+                                </div>
+                                <div class="form-group">
+                                    <label>To</label>
+                                    <input type="date" id="range-to">
+                                </div>
+                            </div>
+
+                            <button class="btn-primary range-apply" id="range-apply">Apply</button>
+
+                        </div>
+
+                    </div>
+
+                    <button class="btn-secondary" id="export-report-btn">
+                        <i class="fa-solid fa-download"></i>
+                        Export Report
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Stat cards -->
+            <div class="rp-stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon blue"><i class="fa-solid fa-bag-shopping"></i></div>
+                    </div>
+                    <strong id="st-sales">$0.00</strong>
+                    <span>Total Sales</span>
+                    <span class="growth-row"><span class="growth" id="st-sales-growth">—</span> vs previous period</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon green"><i class="fa-solid fa-sack-dollar"></i></div>
+                    </div>
+                    <strong id="st-profit">$0.00</strong>
+                    <span>Total Profit</span>
+                    <span class="growth-row"><span class="growth" id="st-profit-growth">—</span> vs previous period</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon purple"><i class="fa-solid fa-clipboard-list"></i></div>
+                    </div>
+                    <strong id="st-orders">0</strong>
+                    <span>Total Orders</span>
+                    <span class="growth-row"><span class="growth" id="st-orders-growth">—</span> vs previous period</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon orange"><i class="fa-solid fa-chart-line"></i></div>
+                    </div>
+                    <strong id="st-avg">$0.00</strong>
+                    <span>Avg Order Value</span>
+                    <span class="growth-row"><span class="growth" id="st-avg-growth">—</span> vs previous period</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon red"><i class="fa-solid fa-credit-card"></i></div>
+                    </div>
+                    <strong id="st-expenses">$0.00</strong>
+                    <span>Total Expenses</span>
+                    <span class="growth-row rp-soon">Not tracked yet</span>
+                </div>
+
+            </div>
+
+
+            <!-- Charts + side panels -->
+            <div class="rp-main-grid">
+
+                <div class="rp-charts-col">
+
+                    <div class="rp-charts-row">
+
+                    <div class="panel chart-panel">
+                        <div class="panel-header">
+                            <div><h3>Sales Overview</h3></div>
+                            <select class="rp-granularity" id="gran-sales">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="rp-sales-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="panel chart-panel">
+                        <div class="panel-header">
+                            <div><h3>Profit Overview</h3></div>
+                            <select class="rp-granularity" id="gran-profit">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="rp-profit-chart"></canvas>
+                        </div>
+                    </div>
+
+                    </div>
+
+            <!-- Sales report table -->
+            <div class="panel table-panel" id="sales-report-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>Sales Report</h3>
+                    </div>
+
+                    <div class="rp-table-tabs" id="rp-table-tabs">
+                        <button class="rp-tab active" data-gran="daily">Daily</button>
+                        <button class="rp-tab" data-gran="weekly">Weekly</button>
+                        <button class="rp-tab" data-gran="monthly">Monthly</button>
+                    </div>
+
+                    <a class="view-all" href="sales-history.html">View All</a>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Total Sales</th>
+                                <th>Total Profit</th>
+                                <th>Orders</th>
+                                <th>Avg Order Value</th>
+                                <th>Expenses</th>
+                                <th>Net Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rp-report-body"></tbody>
+                        <tfoot id="rp-report-foot"></tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+
+                </div>
+
+                <div class="rp-side-col">
+
+                    <div class="panel">
+                        <div class="panel-header"><div><h3>Summary</h3></div></div>
+                        <div class="rp-summary-list">
+                            <div><span><i class="fa-solid fa-cart-shopping"></i> Total Sales</span><strong id="sm-sales">$0.00</strong></div>
+                            <div><span><i class="fa-solid fa-sack-dollar"></i> Total Profit</span><strong id="sm-profit">$0.00</strong></div>
+                            <div><span><i class="fa-solid fa-credit-card"></i> Total Expenses</span><strong id="sm-expenses">$0.00</strong></div>
+                            <div><span><i class="fa-solid fa-coins"></i> Net Profit</span><strong id="sm-net">$0.00</strong></div>
+                            <div><span><i class="fa-solid fa-receipt"></i> Total Orders</span><strong id="sm-orders">0</strong></div>
+                            <div><span><i class="fa-solid fa-users"></i> Total Customers</span><strong id="sm-customers">0</strong></div>
+                        </div>
+                        <a class="view-all rp-full-link" href="#sales-report-panel">View Full Summary</a>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div><h3>Top Selling Products</h3></div>
+                            <a class="view-all" href="product.html">View All</a>
+                        </div>
+                        <div class="compact-list" id="rp-top-products">
+                            <div class="empty-state">No sales in this period.</div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div><h3>Low Stock Alert</h3></div>
+                            <a class="view-all" href="product.html?status=Low+Stock">View All</a>
+                        </div>
+                        <div class="compact-list" id="rp-low-stock">
+                            <div class="empty-state">No low-stock products.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="reports.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,586 @@
+/* ==========================================================
+   REPORTS PAGE
+   Extends dash.css - reuses its variables and shared classes
+   (.panel, .panel-header, .stat-card, .stat-icon, .growth,
+   .btn-primary / .btn-secondary, table, .empty-state,
+   .chart-container, .chart-empty-overlay).
+
+   Order: 1 header  2 range picker  3 stat cards  4 layout
+          5 charts  6 side panels   7 sales table
+          8 dark mode  9 responsive
+   ========================================================== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+#sales-report-panel {
+    scroll-margin-top: 90px;
+}
+
+
+/* ----------------------------------------
+   1. HEADER
+---------------------------------------- */
+
+.rp-header {
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.rp-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+
+/* ----------------------------------------
+   2. DATE RANGE PICKER
+---------------------------------------- */
+
+.range-picker {
+    position: relative;
+}
+
+.range-btn {
+    height: 27px;
+    padding: 0 11px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: #4e596c;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.range-caret {
+    font-size: 7px;
+    color: #9aa2b2;
+}
+
+.range-pop {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 260px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    box-shadow: 0 12px 35px rgba(20, 30, 60, .13);
+    padding: 12px;
+    display: none;
+    z-index: 600;
+}
+
+.range-pop.show {
+    display: block;
+}
+
+.range-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 11px;
+}
+
+.range-preset {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: #556177;
+    font-size: 8px;
+    padding: 5px 9px;
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+.range-preset:hover,
+.range-preset.active {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: #eef2ff;
+}
+
+.range-custom {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 11px;
+}
+
+.range-custom .form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.range-custom label {
+    font-size: 8px;
+    font-weight: 600;
+    color: #697386;
+}
+
+.range-custom input {
+    width: 100%;
+    height: 27px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0 6px;
+    font-size: 9px;
+    background: #fff;
+    color: var(--text);
+}
+
+.range-apply {
+    width: 100%;
+    justify-content: center;
+}
+
+
+/* ----------------------------------------
+   3. STAT CARDS
+---------------------------------------- */
+
+.rp-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 9px;
+}
+
+.rp-stats-grid .stat-card strong {
+    font-size: 18px;
+}
+
+.rp-stats-grid .stat-card > span {
+    font-size: 9px;
+}
+
+.rp-stats-grid .growth-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 7px;
+    font-size: 8px;
+}
+
+.rp-stats-grid .growth {
+    font-size: 8px;
+    background: #f1f3f7;
+    color: #8f98a9;
+}
+
+.rp-stats-grid .growth.positive {
+    background: #e8faf4;
+    color: #20a77d;
+}
+
+.rp-stats-grid .growth.negative {
+    background: #fff0f1;
+    color: #e55c69;
+}
+
+.rp-soon {
+    font-style: italic;
+}
+
+.stat-icon.green {
+    background: #e8faf4;
+    color: #20a77d;
+}
+
+.stat-icon.orange {
+    background: #fff4e5;
+    color: #e8942c;
+}
+
+.stat-icon.red {
+    background: #fff0f1;
+    color: #ef6b76;
+}
+
+
+/* ----------------------------------------
+   4. MAIN LAYOUT
+---------------------------------------- */
+
+.rp-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 10px;
+    margin-top: 11px;
+    align-items: start;
+}
+
+.rp-charts-col,
+.rp-side-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+
+/* ----------------------------------------
+   5. CHARTS
+---------------------------------------- */
+
+.rp-charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.rp-charts-row .chart-panel {
+    min-height: 230px;
+}
+
+.rp-charts-row .chart-container {
+    height: 175px;
+}
+
+.rp-granularity {
+    height: 24px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0 6px;
+    font-size: 9px;
+    background: #fff;
+    color: var(--text);
+    cursor: pointer;
+}
+
+
+/* ----------------------------------------
+   6. SIDE PANELS
+---------------------------------------- */
+
+.panel-header a.view-all {
+    border: 0;
+    background: transparent;
+    color: var(--primary);
+    font-size: 9px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 2px 0;
+}
+
+.rp-summary-list {
+    padding: 0 13px 6px;
+}
+
+.rp-summary-list > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.rp-summary-list > div:last-child {
+    border-bottom: 0;
+}
+
+.rp-summary-list span {
+    color: #697386;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.rp-summary-list span i {
+    width: 14px;
+    text-align: center;
+    color: var(--primary);
+}
+
+a.rp-full-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin: 4px 13px 13px;
+    padding: 8px;
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+}
+
+.rp-prod-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+}
+
+.rp-prod-row:first-child {
+    border-top: 0;
+}
+
+.rp-thumb {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #f0f2f6;
+}
+
+.rp-thumb-fb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2ff;
+    color: #5571ee;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.rp-prod-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.rp-prod-name {
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rp-prod-meta {
+    font-size: 8px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+.rp-prod-amount {
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.rp-pill {
+    font-size: 8px;
+    padding: 3px 9px;
+    border-radius: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.rp-pill.low {
+    background: #fff1f1;
+    color: #e35f68;
+}
+
+.rp-pill.out {
+    background: #ffe3e5;
+    color: #d6404c;
+}
+
+
+/* ----------------------------------------
+   7. SALES REPORT TABLE
+---------------------------------------- */
+
+.rp-charts-col .table-panel {
+    margin-top: 0;
+}
+
+.table-panel .panel-header {
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.table-panel .panel-header h3 {
+    font-size: 11px;
+}
+
+.rp-table-tabs {
+    display: flex;
+    gap: 5px;
+    margin-right: auto;
+    margin-left: 6px;
+}
+
+.rp-tab {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: #556177;
+    font-size: 9px;
+    padding: 5px 11px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.rp-tab.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.table-panel table {
+    min-width: 640px;
+}
+
+.table-panel table th {
+    font-size: 9px;
+    padding: 8px 10px;
+}
+
+.table-panel table td {
+    font-size: 10px;
+    padding: 10px;
+}
+
+.table-panel tfoot td {
+    font-weight: 700;
+    background: #f7f8fb;
+    color: var(--text);
+    border-bottom: 0;
+}
+
+
+/* ----------------------------------------
+   8. DARK MODE
+---------------------------------------- */
+
+body.dark .range-btn,
+body.dark .range-pop,
+body.dark .range-preset,
+body.dark .range-custom input,
+body.dark .rp-granularity,
+body.dark .rp-tab,
+body.dark a.rp-full-link {
+    background: #1f2937;
+    color: #f3f4f6;
+    border-color: #374151;
+}
+
+body.dark .range-preset:hover,
+body.dark .range-preset.active {
+    background: #273449;
+    color: #9db1f5;
+    border-color: #3158f5;
+}
+
+body.dark .range-custom label,
+body.dark .rp-summary-list span {
+    color: #9ca3af;
+}
+
+body.dark .rp-tab.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+body.dark .panel-header a.view-all {
+    background: transparent;
+    color: #9db1f5;
+}
+
+body.dark .rp-stats-grid .growth {
+    background: #273449;
+    color: #aeb7c7;
+}
+
+body.dark .rp-stats-grid .growth.positive {
+    background: #12342b;
+    color: #4cd6a6;
+}
+
+body.dark .rp-stats-grid .growth.negative {
+    background: #3a1d22;
+    color: #ff8b95;
+}
+
+body.dark .table-panel tfoot td {
+    background: #273449;
+    color: #f3f4f6;
+}
+
+body.dark .rp-thumb-fb {
+    background: #273449;
+    color: #9db1f5;
+}
+
+body.dark .rp-pill.low,
+body.dark .rp-pill.out {
+    background: #3a1d22;
+    color: #ff8b95;
+}
+
+
+/* ----------------------------------------
+   9. RESPONSIVE
+---------------------------------------- */
+
+@media (max-width: 1250px) {
+
+    .rp-main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rp-side-col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        align-items: start;
+    }
+
+}
+
+@media (max-width: 1100px) {
+
+    .rp-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+@media (max-width: 900px) {
+
+    .rp-side-col {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 720px) {
+
+    .rp-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .rp-charts-row {
+        grid-template-columns: 1fr;
+    }
+
+    .rp-header-actions {
+        width: 100%;
+    }
+
+    .range-pop {
+        left: 0;
+        right: auto;
+    }
+
+}
+
+@media (max-width: 420px) {
+
+    .rp-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

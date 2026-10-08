@@ -189,6 +189,20 @@
 
             if (nameEl) nameEl.textContent = fullName;
 
+            const tipEl = $("user-tooltip");
+            if (tipEl) tipEl.textContent = fullName + " \u00b7 Finance Admin";
+
+            const navUser = document.querySelector(".navbar-user");
+            if (navUser) {
+                navUser.addEventListener("click", function (event) {
+                    event.stopPropagation();
+                    navUser.classList.toggle("show-tooltip");
+                });
+                document.addEventListener("click", function () {
+                    navUser.classList.remove("show-tooltip");
+                });
+            }
+
             if (avatarEl) {
                 const parts = fullName.split(/\s+/).filter(Boolean);
                 let initials = "U";
@@ -643,6 +657,11 @@
                             <td>${Number(product.minStock) || 0}</td>
                             <td><span class="status ${statusClass(status)}">${status}</span></td>
                             <td>
+                                ${status !== "In Stock" ? `
+                                    <button class="act-btn restock" data-id="${product.id}" title="Add stock">
+                                        <i class="fa-solid fa-box-open"></i>
+                                    </button>
+                                ` : ""}
                                 <button class="act-btn edit" data-id="${product.id}" title="Edit">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
@@ -653,6 +672,10 @@
                         </tr>
                     `;
                 }).join("");
+
+                body.querySelectorAll(".act-btn.restock").forEach(btn => {
+                    btn.addEventListener("click", () => restockProduct(btn.dataset.id));
+                });
 
                 body.querySelectorAll(".act-btn.edit").forEach(btn => {
                     btn.addEventListener("click", () => startEdit(btn.dataset.id));
@@ -742,7 +765,7 @@
 
         function startEdit(id) {
             const products = getUserArray(KEYS.productsStore, uid);
-            const product = products.find(p => p.id === id);
+            const product = products.find(p => String(p.id) === String(id));
             if (!product) return;
 
             editingId = id;
@@ -756,21 +779,60 @@
             cancelBtn.addEventListener("click", clearForm);
         }
 
+        function restockProduct(id) {
+            const products = getUserArray(KEYS.productsStore, uid);
+            const index = products.findIndex(p => String(p.id) === String(id));
+
+            if (index === -1) {
+                window.alert("Could not find this product. Please refresh the page and try again.");
+                return;
+            }
+
+            const product = products[index];
+            const currentStock = Number(product.stock) || 0;
+
+            const input = window.prompt(
+                `How many units of "${product.name}" are you adding to stock?\nCurrent stock: ${currentStock}`,
+                "10"
+            );
+
+            if (input === null) return;
+
+            const addQty = Number(input);
+
+            if (!Number.isFinite(addQty) || addQty <= 0) {
+                window.alert("Please enter a valid positive quantity.");
+                return;
+            }
+
+            const newStock = currentStock + Math.floor(addQty);
+            products[index] = { ...product, stock: newStock };
+
+            setUserArray(KEYS.productsStore, uid, products);
+
+            logActivity("Stock added", `${product.name} · +${Math.floor(addQty)} (now ${newStock})`);
+            pushNotification("Stock updated", `"${product.name}" is back in stock (${newStock} available).`);
+
+            if (editingId === id) clearForm();
+
+            refreshAll();
+        }
+
         function deleteProduct(id) {
             const products = getUserArray(KEYS.productsStore, uid);
-            const product = products.find(p => p.id === id);
+            const product = products.find(p => String(p.id) === String(id));
             if (!product) return;
 
             const confirmed = window.confirm(`Delete "${product.name}"? This cannot be undone.`);
             if (!confirmed) return;
 
-            const updated = products.filter(p => p.id !== id);
+            const updated = products.filter(p => String(p.id) !== String(id));
             setUserArray(KEYS.productsStore, uid, updated);
 
             logActivity("Product deleted", product.name);
             pushNotification("Product removed", `${product.name} was deleted from your inventory.`);
 
-            if (editingId === id) clearForm();
+            if (String(editingId) === String(id)) clearForm();
 
             refreshAll();
         }
@@ -822,7 +884,7 @@
 
                 if (editingId) {
 
-                    const index = products.findIndex(p => p.id === editingId);
+                    const index = products.findIndex(p => String(p.id) === String(editingId));
 
                     if (index !== -1) {
                         products[index] = {
@@ -834,6 +896,15 @@
                         setUserArray(KEYS.productsStore, uid, products);
                         logActivity("Product updated", name);
                         pushNotification("Product updated", `${name} was updated.`);
+
+                        if (stock === 0) {
+                            pushNotification("Out of stock", `"${name}" is out of stock.`);
+                        } else if (stock <= minStock) {
+                            pushNotification("Low stock warning", `"${name}" has only ${stock} left. You should purchase more soon.`);
+                        }
+                    } else {
+                        window.alert("Could not find this product to update it. Please refresh the page and try again.");
+                        return;
                     }
 
                 } else {
@@ -905,6 +976,16 @@
             loadNotifications();
         }
 
+        // Deep link support: product.html?status=Low+Stock (used by Reports > Low Stock Alert > View All)
+        const presetStatus = new URLSearchParams(window.location.search).get("status");
+        if (presetStatus && filterStatus) {
+            const hasOption = Array.from(filterStatus.options).some(o => o.value === presetStatus || o.text === presetStatus);
+            if (hasOption) {
+                filterStatus.value = presetStatus;
+                applyFilters();
+            }
+        }
+
         refreshAll();
 
 
@@ -932,3 +1013,17 @@
     }
 
 })();
+
+/* =================================================
+   BFCACHE GUARD
+   If the browser restores this page from back/forward
+   cache (e.g. user clicks Back instead of a sidebar
+   link), the page can show a frozen snapshot from
+   before data changed elsewhere. Force a fresh reload
+   in that case so stock/status/notifications are current.
+================================================= */
+window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});

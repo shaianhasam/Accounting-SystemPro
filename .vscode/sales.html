@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AccountPro - Sales</title>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <!-- Dashboard CSS (shared sidebar / navbar / base styles) -->
+    <link rel="stylesheet" href="dash.css">
+
+    <!-- Sales page specific styles -->
+    <link rel="stylesheet" href="sales.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================================
+         SIDEBAR (identical to Dashboard)
+    ========================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-top">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div>
+                    <strong>AccountPro</strong>
+                    <small>Accounting System</small>
+                </div>
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="product.html" class="nav-item">
+                    <i class="fa-solid fa-box"></i>
+                    <span>Product Management</span>
+                </a>
+
+                <a href="sales.html" class="nav-item active">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Sales History</span>
+                </a>
+
+                <a href="reports.html" class="nav-item">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Reports</span>
+                </a>
+
+
+                <a href="#"
+                   class="nav-item future-link"
+                   data-module="Settings">
+
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <button class="sidebar-action" id="dark-mode-btn">
+                <i class="fa-regular fa-sun" id="theme-icon"></i>
+                <span>Dark mode</span>
+            </button>
+
+            <button class="sidebar-action logout-btn" id="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="main-content">
+
+        <!-- =====================================
+             TOP NAVBAR (identical to Dashboard)
+        ====================================== -->
+
+        <header class="topbar">
+
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="global-search" placeholder="Search invoices, products, customers..." autocomplete="off">
+                <div class="search-results" id="search-results"></div>
+            </div>
+
+            <div class="topbar-right">
+
+                <div class="notification-wrapper">
+                    <button class="notification-btn" id="notification-btn" aria-label="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-count" id="notification-count">0</span>
+                    </button>
+
+                    <div class="notification-panel" id="notification-panel">
+                        <div class="notification-header">
+                            <strong>Notifications</strong>
+                            <button id="mark-all-read">Mark all read</button>
+                        </div>
+                        <div class="notification-list" id="notification-list"></div>
+                    </div>
+                </div>
+
+                <div class="navbar-user">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-info">
+                        <strong id="navbar-user-name">User</strong>
+                        <span>Finance Admin</span>
+                    </div>
+                    <div class="user-tooltip" id="user-tooltip">User</div>
+                </div>
+
+                <button class="mobile-menu" id="mobile-menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================
+             SALES / POS CONTENT
+        ====================================== -->
+
+        <section class="dashboard-content">
+
+            <div class="dashboard-header pm-header">
+
+                <div>
+                    <h1>Sales / Create New Sale</h1>
+                    <p>Select products and complete the sale</p>
+                </div>
+
+                <div class="pm-stats">
+                    <div class="stat-card mini">
+                        <div class="stat-top">
+                            <div class="stat-icon blue"><i class="fa-solid fa-wallet"></i></div>
+                        </div>
+                        <strong id="today-sale-total">$0.00</strong>
+                        <span>Today's Sales</span>
+                    </div>
+
+                    <div class="stat-card mini">
+                        <div class="stat-top">
+                            <div class="stat-icon green"><i class="fa-solid fa-sack-dollar"></i></div>
+                        </div>
+                        <strong id="today-sale-profit">$0.00</strong>
+                        <span>Today's Profit</span>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="sales-layout">
+
+                <!-- LEFT: product selection + recent sales -->
+                <div class="sales-main">
+
+                    <div class="panel select-panel">
+
+                        <div class="panel-header">
+                            <div><h3>Select Products</h3></div>
+                        </div>
+
+                        <div class="pos-filters">
+
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="pos-search" placeholder="Search products by name or barcode..." autocomplete="off">
+                            </div>
+
+                            <select id="pos-category">
+                                <option value="">All Categories</option>
+                                <option>Beverages</option>
+                                <option>Food</option>
+                                <option>Snacks</option>
+                                <option>Dairy</option>
+                                <option>Grains</option>
+                                <option>Household</option>
+                                <option>Personal Care</option>
+                                <option>Other</option>
+                            </select>
+
+                            <select id="pos-sort">
+                                <option value="">Sort</option>
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                                <option value="name-asc">Name: A to Z</option>
+                            </select>
+
+                            <div class="view-toggle">
+                                <button class="vt-btn active" id="vt-grid" title="Grid view">
+                                    <i class="fa-solid fa-table-cells"></i>
+                                </button>
+                                <button class="vt-btn" id="vt-list" title="List view">
+                                    <i class="fa-solid fa-list"></i>
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div class="product-grid" id="pos-grid"></div>
+
+                    </div>
+
+
+                    <div class="panel recent-panel">
+
+                        <div class="panel-header">
+                            <div>
+                                <h3>Recent Sales</h3>
+                                <p>Latest completed transactions</p>
+                            </div>
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Invoice #</th>
+                                        <th>Customer</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                        <th>Payment</th>
+                                        <th>Time</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pos-recent-body"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="view-all-row">
+                            <button class="view-all" id="view-all-history">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                View All Sales History
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RIGHT: current sale / cart -->
+                <aside class="cart-panel">
+
+                    <div class="panel">
+
+                        <div class="panel-header cart-header">
+                            <div><h3 id="cart-title">Current Sale (0)</h3></div>
+                            <button class="cart-clear" id="cart-clear">
+                                <i class="fa-solid fa-trash"></i> Clear Cart
+                            </button>
+                        </div>
+
+                        <div class="cart-items" id="cart-items">
+                            <div class="empty-state cart-empty">Cart is empty. Select a product to get started.</div>
+                        </div>
+
+                        <div class="cart-summary">
+
+                            <div class="sum-row">
+                                <span>Subtotal</span>
+                                <strong id="sum-subtotal">$0.00</strong>
+                            </div>
+
+                            <div class="sum-row sum-input-row">
+                                <span>Discount</span>
+                                <input type="number" id="cart-discount" min="0" step="0.01" value="0">
+                            </div>
+
+                            <div class="sum-row sum-input-row">
+                                <span id="tax-label">Tax (0%)</span>
+                                <input type="number" id="cart-tax-rate" min="0" step="0.1" value="0">
+                            </div>
+
+                            <div class="sum-row sum-total">
+                                <span>Total</span>
+                                <strong id="sum-total">$0.00</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="pay-section">
+
+                            <label class="pay-label">Payment Method</label>
+
+                            <div class="pay-methods" id="pay-methods">
+                                <button type="button" class="pay-btn active" data-method="Cash">
+                                    <i class="fa-solid fa-money-bill-wave"></i> Cash
+                                </button>
+                                <button type="button" class="pay-btn" data-method="Card">
+                                    <i class="fa-solid fa-credit-card"></i> Card
+                                </button>
+                                <button type="button" class="pay-btn" data-method="Mobile Money">
+                                    <i class="fa-solid fa-mobile-screen"></i> Mobile Money
+                                </button>
+                                <button type="button" class="pay-btn" data-method="Other">
+                                    <i class="fa-solid fa-ellipsis"></i> Other
+                                </button>
+                            </div>
+
+                            <label class="pay-label">Received Amount</label>
+                            <input type="number" id="cart-received" min="0" step="0.01" placeholder="0.00">
+
+                            <div class="change-box" id="change-box">
+                                <span>Change</span>
+                                <strong id="sum-change">$0.00</strong>
+                            </div>
+
+                            <button class="btn-primary complete-btn" id="complete-sale">
+                                <i class="fa-solid fa-check"></i> Complete Sale
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================
+     PRINTABLE INVOICE (hidden, shown only on print)
+========================================== -->
+
+<div id="invoice-print" class="invoice-print">
+
+    <div class="inv-head">
+        <h2>AccountPro</h2>
+        <p>Accounting System</p>
+    </div>
+
+    <div class="inv-meta">
+        <div><span>Invoice No:</span> <strong id="inv-id">-</strong></div>
+        <div><span>Date:</span> <strong id="inv-date">-</strong></div>
+        <div><span>Time:</span> <strong id="inv-time">-</strong></div>
+        <div><span>Customer:</span> <strong id="inv-customer">-</strong></div>
+    </div>
+
+    <table class="inv-table">
+        <thead>
+            <tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+        </thead>
+        <tbody id="inv-items"></tbody>
+    </table>
+
+    <div class="inv-totals">
+        <div><span>Subtotal:</span> <strong id="inv-subtotal">$0.00</strong></div>
+        <div><span>Discount:</span> <strong id="inv-discount">$0.00</strong></div>
+        <div><span>Tax:</span> <strong id="inv-tax">$0.00</strong></div>
+        <div class="inv-grand"><span>TOTAL:</span> <strong id="inv-total">$0.00</strong></div>
+    </div>
+
+    <div class="inv-pay">
+        <div><span>Payment:</span> <strong id="inv-payment">-</strong></div>
+        <div><span>Received:</span> <strong id="inv-received">$0.00</strong></div>
+        <div><span>Change:</span> <strong id="inv-change">$0.00</strong></div>
+    </div>
+
+    <p class="inv-thanks">Thank you for your purchase!</p>
+
+</div>
+
+
+<!-- Sales page JavaScript -->
+<script src="sales.js"></script>
+
+</body>
+</html>

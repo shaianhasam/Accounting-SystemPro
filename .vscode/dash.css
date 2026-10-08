@@ -89,6 +89,7 @@ body {
 
     background: #fff;
 
+
     border-right: 1px solid var(--border);
 
     display: flex;
@@ -232,6 +233,7 @@ body {
 
     color: var(--primary);
 
+
 }
 
 
@@ -292,6 +294,8 @@ body {
 .sidebar-action:hover {
 
     background: #f4f6fa;
+    color: black;
+
 
 }
 
@@ -320,6 +324,9 @@ body {
 
 /* ==========================================
    TOPBAR
+   position: sticky keeps the navbar visible at
+   the top of the viewport while a long page
+   (e.g. many products) scrolls underneath it.
 ========================================== */
 
 .topbar {
@@ -337,6 +344,11 @@ body {
     justify-content: space-between;
 
     padding: 0 20px;
+
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 50;
 
 }
 
@@ -720,6 +732,79 @@ body {
     align-items: center;
 
     gap: 7px;
+
+    position: relative;
+
+    cursor: pointer;
+
+}
+
+
+.user-tooltip {
+
+    position: absolute;
+
+    top: calc(100% + 10px);
+
+    right: 0;
+
+    background: #172033;
+
+    color: #fff;
+
+    padding: 6px 11px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    white-space: nowrap;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform: translateY(-4px);
+
+    transition: opacity .15s, transform .15s, visibility .15s;
+
+    pointer-events: none;
+
+    z-index: 700;
+
+}
+
+
+.user-tooltip::after {
+
+    content: "";
+
+    position: absolute;
+
+    bottom: 100%;
+
+    right: 14px;
+
+    border: 5px solid transparent;
+
+    border-bottom-color: #172033;
+
+}
+
+
+.navbar-user:hover .user-tooltip,
+
+.navbar-user.show-tooltip .user-tooltip {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform: translateY(0);
 
 }
 
@@ -1560,6 +1645,7 @@ body.dark .view-all {
     background: #1f2937;
 
     color: #f3f4f6;
+    
 
 }
 
@@ -1570,12 +1656,15 @@ body.dark .search-container input {
 
     color: #fff;
 
+
 }
 
 
 body.dark .nav-item {
+    
 
-    color: #aeb7c7;
+    color: #eef1f6;
+
 
 }
 
@@ -1584,12 +1673,35 @@ body.dark .nav-item:hover {
 
     background: #273449;
 
+    color: #ffffff;
+
+
 }
 
 
 body.dark .sidebar-action {
 
-    color: #aeb7c7;
+
+    color: #eef1f6;
+    
+
+}
+
+body.dark .sidebar-action:hover {
+
+
+    color: black;
+    
+
+}
+
+
+body.dark .brand strong,
+body.dark .brand small,
+body.dark .user-info strong {
+
+    color: #ffffff;
+
 
 }
 
@@ -1624,6 +1736,24 @@ body.dark .period-badge {
     background: #293548;
 
     color: #aeb7c7;
+
+}
+
+
+/* Divider / row lines throughout the app are hardcoded
+   light-gray in the base styles above, so on a dark
+   background they were nearly invisible. This makes every
+   such line switch to a lighter, visible tone in dark mode. */
+
+body.dark th,
+body.dark td,
+body.dark .search-result,
+body.dark .notification-item,
+body.dark .activity-item,
+body.dark .stock-item,
+body.dark .best-item {
+
+    border-color: #374151;
 
 }
 
@@ -1988,10 +2118,10 @@ body {
 
 }
 
+
 /* ==========================================
-   ADD THIS TO THE END OF dash.css
-   (only new rule needed - nothing else in
-   dash.css changes)
+   CHART EMPTY STATE (used by dashboard.js when
+   an account has no sales yet)
 ========================================== */
 
 .chart-empty-overlay {

@@ -40,6 +40,7 @@ body {
   flex: 1;  
   margin-bottom: 400px;
   margin-right: 300px;
+ 
 }
 
 
@@ -368,5 +369,45 @@ body {
     gap: 10px;
     padding: 15px;
     text-align: center;
+  }
+}
+
+@media (max-width: 992px) {
+  .main-container {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .left-section {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* این دو خط اضافه شدند تا فاصله‌های عظیم دسکتاپ در موبایل حذف شوند */
+    margin-right: 0; 
+    margin-bottom: 0; 
+  }
+
+  .logo {
+    justify-content: center;
+  }
+
+  .intro-content h1 {
+    font-size: 28px;
+  }
+
+  .right-section {
+    width: 100%;
+  }
+
+  .auth-card {
+    max-width: 420px;
+  }
+} 
+
+@media (max-width: 576px) {
+  body {
+    background-image: url('login-mobile.png'); /* یک عکس مخصوص موبایل */
+    background-position: top center;
   }
 }
