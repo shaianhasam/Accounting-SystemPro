@@ -689,3 +689,39 @@ body.dark .cart-clear {
     font-size: 11px;
     margin-top: 14px;
 }
+
+/* استانداردسازی متن‌ها و اندازه‌ها در کارت‌های انتخاب محصول */
+.pos-name {
+    font-size: 13px; /* افزایش سایز نام محصول */
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.pos-cat {
+    font-size: 11px; /* افزایش سایز دسته‌بندی */
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.pos-price {
+    font-size: 14px; /* افزایش سایز قیمت */
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.pos-stock {
+    font-size: 11px; /* افزایش سایز متن موجودی انبار */
+    margin-top: 4px;
+}
+
+/* بزرگ‌تر کردن تصویر محصول در کارت‌ها برای تناسب بهتر */
+.pos-thumb {
+    height: 90px;
+    object-fit: cover;
+}
+
+.pos-thumb-fallback {
+    height: 90px;
+    font-size: 22px;
+    font-weight: 700;
+}

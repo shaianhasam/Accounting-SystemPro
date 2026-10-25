@@ -1,0 +1,227 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccountPro - Expenses Management</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Shared Dashboard CSS -->
+    <link rel="stylesheet" href="dash.css">
+    <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="lang.css">
+    <link rel="stylesheet" href="ex.css">      
+</head>
+<body>
+
+<div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-top">
+            <div class="brand">
+                <div class="brand-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div>
+                    <strong>AccountPro</strong>
+                    <small>Accounting System</small>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></a>
+                <a href="product.html" class="nav-item"><i class="fa-solid fa-box"></i><span>Product Management</span></a>
+                <a href="sales.html" class="nav-item"><i class="fa-solid fa-chart-line"></i><span>Sales History</span></a>
+                <a href="expenses.html" class="nav-item active"><i class="fa-solid fa-receipt"></i><span>Expenses</span></a>
+                <a href="reports.html" class="nav-item"><i class="fa-regular fa-file-lines"></i><span>Reports</span></a>
+                <a href="settings.html" class="nav-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+            </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+            <button class="sidebar-action" id="dark-mode-btn"><i class="fa-regular fa-sun" id="theme-icon"></i><span>Dark mode</span></button>
+            <button class="sidebar-action logout-btn" id="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="global-search" placeholder="Search expenses..." autocomplete="off">
+                <div class="search-results" id="search-results"></div>
+            </div>
+
+            <div class="topbar-right">
+                <!-- نوتیفیکیشن‌ها -->
+                <div class="notification-wrapper">
+                    <button class="notification-btn" id="notification-btn" aria-label="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-count" id="notification-count">0</span>
+                    </button>
+                    <div class="notification-panel" id="notification-panel">
+                        <div class="notification-header">
+                            <strong>Notifications</strong>
+                            <button id="mark-all-read">Mark all read</button>
+                        </div>
+                        <div class="notification-list" id="notification-list"></div>
+                    </div>
+                </div>
+
+                <!-- پروفایل کاربر -->
+                <div class="navbar-user">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-info">
+                        <strong id="navbar-user-name">User</strong>
+                        <span>Finance Admin</span>
+                    </div>
+                    <div class="user-tooltip" id="user-tooltip">User</div>
+                </div>
+
+                <button class="mobile-menu" id="mobile-menu"><i class="fa-solid fa-bars"></i></button>
+            </div>
+        </header>
+
+        <section class="dashboard-content">
+            <div class="dashboard-header pm-header">
+                <div>
+                    <h1>Expenses Management</h1>
+                    <p>Smart expense tracking, profit deduction, and financial management</p>
+                </div>
+            </div>
+
+            <!-- Add Expense Form -->
+            <div class="panel add-panel">
+                <div class="panel-header">
+                    <h3>Add New Expense</h3>
+                </div>
+                <form id="expense-form" class="prod-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ex-title">Expense Title / Description</label>
+                            <input type="text" id="ex-title" placeholder="e.g. Shop Rent, Electricity, Lunch">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ex-category">Category</label>
+                            <select id="ex-category">
+                                <option value="">Select category</option>
+                                <option>Rent</option>
+                                <option>Utilities</option>
+                                <option>Supplies</option>
+                                <option>Transport</option>
+                                <option>Salaries</option>
+                                <option>Food</option>
+                                <option>Household</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ex-amount">Amount</label>
+                            <div class="cur-input">
+                                <button type="button" class="cur-btn">$</button>
+                                <input type="number" id="ex-amount" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ex-type">Expense Type</label>
+                            <select id="ex-type">
+                                <option value="Business">Business Expense</option>
+                                <option value="Personal">Personal Expense</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 15px;">
+                        <div class="form-group">
+                            <label for="ex-payment">Payment Method</label>
+                            <select id="ex-payment">
+                                <option value="Cash">Cash</option>
+                                <option value="Bank">Bank</option>
+                                <option value="Mobile Money">Mobile Money</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ex-status">Status</label>
+                            <select id="ex-status">
+                                <option value="Paid">Paid</option>
+                                <option value="Unpaid">Unpaid</option>
+                                <option value="Partially Paid">Partially Paid</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ex-source">Funding Source</label>
+                            <select id="ex-source">
+                                <option value="Today's Profit">Today's Profit</option>
+                                <option value="Weekly Profit Reserve">Weekly Profit Reserve</option>
+                                <option value="Monthly Profit Reserve">Monthly Profit Reserve</option>
+                                <option value="Cash Balance">Cash Balance</option>
+                                <option value="Unpaid Expense">Unpaid / Credit</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ex-date">Date & Time</label>
+                            <input type="datetime-local" id="ex-date">
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 15px;">
+                        <div class="form-group" style="grid-column: span 3;">
+                            <label for="ex-desc">Optional Notes / Details</label>
+                            <input type="text" id="ex-desc" placeholder="Additional notes or details...">
+                        </div>
+                        <div class="form-group form-actions" style="display: flex; align-items: flex-end; gap: 8px;">
+                            <button type="submit" class="btn-primary" id="ex-submit" style="width: 100%; height: 42px;">
+                                <i class="fa-solid fa-plus"></i> <span>Save Expense</span>
+                            </button>
+                            <button type="button" class="btn-secondary" id="ex-cancel" style="display: none; height: 42px; background-color: #64748b; color: white; border: none; border-radius: 6px; padding: 0 15px; cursor: pointer;">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Expenses Table -->
+            <div class="panel table-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>All Expenses</h3>
+                        <p>History of recorded business and personal expenses</p>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Payment</th>
+                                <th>Source</th>
+                                <th>Status</th>
+                                <th>Date & Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expense-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="expenses.js"></script>
+<script src="lang.js"></script>
+</body>
+</html> -->

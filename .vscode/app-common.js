@@ -398,3 +398,29 @@ function escapeHTML(value) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+// لایه پشت سایدبار را بساز و به صفحه اضافه کن
+let overlay = document.querySelector(".sidebar-overlay");
+if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "sidebar-overlay";
+    document.body.appendChild(overlay);
+}
+
+const sidebar = document.getElementById("sidebar");
+const mobileMenuBtn = document.getElementById("mobile-menu");
+
+if (mobileMenuBtn && sidebar) {
+    mobileMenuBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("active");
+    });
+
+    // بستن منو با کلیک روی لایه تاریک پشت آن
+    overlay.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+    });
+}
+

@@ -1,0 +1,380 @@
+/* ==========================================================
+   LANG.CSS
+   1. Language switcher (icon next to the notification bell)
+   2. Right-to-left layout (only applies when <html dir="rtl">,
+      i.e. when Persian is selected)
+   Load this AFTER the page's own CSS files.
+   ========================================================== */
+
+
+/* ----------------------------------------
+   1. LANGUAGE SWITCHER
+---------------------------------------- */
+
+.lang-wrapper {
+    position: relative;
+}
+
+.lang-btn {
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--border, #e7eaf1);
+    background: #fff;
+    border-radius: 6px;
+    color: #707b90;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lang-btn:hover {
+    color: var(--primary, #3158f5);
+    border-color: var(--primary, #3158f5);
+}
+
+.lang-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 140px;
+    background: #fff;
+    border: 1px solid var(--border, #e7eaf1);
+    border-radius: 9px;
+    box-shadow: 0 12px 35px rgba(20, 30, 60, .13);
+    padding: 5px;
+    display: none;
+    z-index: 700;
+}
+
+.lang-menu.show {
+    display: block;
+}
+
+.lang-menu button {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    padding: 9px 11px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text, #172033);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: start;
+}
+
+.lang-menu button:hover {
+    background: #f3f6ff;
+}
+
+.lang-menu button.active {
+    color: var(--primary, #3158f5);
+    font-weight: 700;
+}
+
+.lang-menu button.active::after {
+    content: "\2713";
+}
+
+/* login page: beside the dark mode button */
+.lang-wrapper.lang-login {
+    position: fixed;
+    top: 16px;
+    right: 62px;
+    z-index: 20;
+}
+
+.lang-login .lang-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
+}
+
+body.dark .lang-btn,
+body.dark .lang-menu {
+    background: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+}
+
+body.dark .lang-menu button {
+    color: #f3f4f6;
+}
+
+body.dark .lang-menu button:hover {
+    background: #273449;
+}
+
+@media (max-width: 560px) {
+
+    .lang-wrapper.lang-login {
+        top: 12px;
+        right: 54px;
+    }
+
+    .lang-login .lang-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+}
+
+
+/* ----------------------------------------
+   2. RIGHT-TO-LEFT (Persian)
+   Flex rows and grids mirror automatically
+   from dir="rtl"; only positioned elements,
+   fixed margins and alignments need fixing.
+---------------------------------------- */
+
+html[dir="rtl"] *,
+html[dir="rtl"] body {
+    font-family: 'Vazirmatn', 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+
+/* sidebar moves to the right */
+html[dir="rtl"] .sidebar {
+    left: auto;
+    right: 0;
+    border-right: 0;
+    border-left: 1px solid var(--border);
+}
+
+html[dir="rtl"] .main-content {
+    margin-left: 0;
+    margin-right: var(--sidebar-width);
+}
+
+@media (max-width: 800px) {
+
+    html[dir="rtl"] .sidebar {
+        transform: translateX(100%);
+    }
+
+    html[dir="rtl"] .sidebar.open {
+        transform: translateX(0);
+    }
+
+    html[dir="rtl"] .main-content {
+        margin-right: 0;
+    }
+
+}
+
+/* top bar search + dropdowns */
+html[dir="rtl"] .search-container > i {
+    left: auto;
+    right: 12px;
+}
+
+html[dir="rtl"] .search-container input {
+    padding: 0 31px 0 12px;
+}
+
+html[dir="rtl"] .search-results {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .notification-count {
+    right: auto;
+    left: -4px;
+}
+
+html[dir="rtl"] .notification-panel,
+html[dir="rtl"] .lang-menu,
+html[dir="rtl"] .user-tooltip {
+    right: auto;
+    left: 0;
+}
+
+html[dir="rtl"] .user-tooltip::after {
+    right: auto;
+    left: 14px;
+}
+
+@media (max-width: 560px) {
+
+    html[dir="rtl"] .notification-panel {
+        left: 10px;
+        right: auto;
+    }
+
+}
+
+@media (min-width: 1101px) {
+
+    html[dir="rtl"] .search-container > i {
+        right: 14px;
+    }
+
+    html[dir="rtl"] .search-container input {
+        padding: 0 38px 0 14px;
+    }
+
+}
+
+/* tables and text alignment */
+html[dir="rtl"] th {
+    text-align: right;
+}
+
+html[dir="rtl"] .total-sales-info div {
+    text-align: left;
+}
+
+@media (max-width: 800px) {
+
+    html[dir="rtl"] .total-sales-info div {
+        text-align: right;
+    }
+
+}
+
+/* search boxes used by the Product / Sales / History pages */
+html[dir="rtl"] .search-box i,
+html[dir="rtl"] .pos-filters .search-box i,
+html[dir="rtl"] .filters-bar .search-box i {
+    left: auto;
+    right: 10px;
+}
+
+html[dir="rtl"] .search-box input,
+html[dir="rtl"] .pos-filters .search-box input,
+html[dir="rtl"] .filters-bar .search-box input {
+    padding: 0 28px 0 10px;
+}
+
+/* product page */
+html[dir="rtl"] .act-btn {
+    margin-right: 0;
+    margin-left: 4px;
+}
+
+html[dir="rtl"] .cur-btn {
+    left: auto;
+    right: 5px;
+}
+
+html[dir="rtl"] .cur-input input {
+    padding-left: 10px;
+    padding-right: 38px;
+}
+
+@media (min-width: 1101px) {
+
+    html[dir="rtl"] .cur-input input {
+        padding-left: 10px;
+        padding-right: 46px;
+    }
+
+}
+
+/* sales / POS page */
+html[dir="rtl"] .cart-row-total,
+html[dir="rtl"] .sum-input-row input {
+    text-align: left;
+}
+
+html[dir="rtl"] .inv-table th,
+html[dir="rtl"] .inv-table td {
+    text-align: right;
+}
+
+html[dir="rtl"] .inv-table th:nth-child(n+2),
+html[dir="rtl"] .inv-table td:nth-child(n+2) {
+    text-align: left;
+}
+
+/* reports page */
+html[dir="rtl"] .range-pop {
+    right: auto;
+    left: 0;
+}
+
+html[dir="rtl"] .rp-table-tabs {
+    margin-right: 6px;
+    margin-left: auto;
+}
+
+@media (max-width: 720px) {
+
+    html[dir="rtl"] .range-pop {
+        left: auto;
+        right: 0;
+    }
+
+}
+
+/* pagination arrows point the other way */
+html[dir="rtl"] .pg-btn i,
+html[dir="rtl"] .range-caret {
+    transform: scaleX(-1);
+}
+
+/* login page */
+html[dir="rtl"] .input-wrapper i {
+    left: auto;
+    right: 13px;
+}
+
+html[dir="rtl"] .input-wrapper .toggle-password {
+    right: auto;
+    left: 13px;
+}
+
+/* emails, passwords, numbers and dates are always typed left-to-right */
+html[dir="rtl"] input[type="email"],
+html[dir="rtl"] input[type="password"],
+html[dir="rtl"] input[type="number"],
+html[dir="rtl"] input[type="date"] {
+    direction: ltr;
+    text-align: right;
+}
+
+html[dir="rtl"] .sum-input-row input[type="number"] {
+    text-align: left;
+}
+
+/* the printed invoice keeps its own simple layout */
+html[dir="rtl"] .invoice-print {
+    left: auto;
+    right: 0;
+}
+
+/* Keep icon fonts working in Persian mode */
+html[dir="rtl"] i.fa,
+html[dir="rtl"] i.fas,
+html[dir="rtl"] i.far,
+html[dir="rtl"] i.fab,
+html[dir="rtl"] i.fa-solid,
+html[dir="rtl"] i.fa-regular,
+html[dir="rtl"] i.fa-brands,
+html[dir="rtl"] .fa,
+html[dir="rtl"] [class^="fa-"]::before,
+html[dir="rtl"] [class*=" fa-"]::before {
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free" !important;
+}
+
+html[dir="rtl"] .fa-solid,
+html[dir="rtl"] .fas,
+html[dir="rtl"] [class*="fa-solid"]::before,
+html[dir="rtl"] [class*="fas"]::before {
+    font-weight: 900;
+}
+
+html[dir="rtl"] .fa-regular,
+html[dir="rtl"] .far {
+    font-weight: 400;
+}
+
+html[dir="rtl"] .fa-brands,
+html[dir="rtl"] .fab {
+    font-family: "Font Awesome 6 Brands", "Font Awesome 5 Brands" !important;
+    font-weight: 400;
+}

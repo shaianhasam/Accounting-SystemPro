@@ -411,3 +411,8 @@ body {
     background-position: top center;
   }
 }
+
+/* تنظیم عرض و مقیاس صفحه لاگین روی ۹۰ درصد */
+body.login-page {
+    zoom: 90%;
+}

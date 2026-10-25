@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccountPro - Settings</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Dashboard & Common CSS -->
+    <link rel="stylesheet" href="dash.css">
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="lang.css">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-top">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div>
+                    <strong>AccountPro</strong>
+                    <small>Accounting System</small>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="product.html" class="nav-item">
+                    <i class="fa-solid fa-box"></i>
+                    <span>Product Management</span>
+                </a>
+                <a href="sales.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Sales History</span>
+                </a>
+
+                               <a href="expenses.html" class="nav-item">
+    <i class="fa-solid fa-receipt"></i>
+    <span>Expenses</span>
+</a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Reports</span>
+                </a>
+
+ 
+                <a href="settings.html" class="nav-item active">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+            <button class="sidebar-action" id="dark-mode-btn">
+                <i class="fa-regular fa-sun" id="theme-icon"></i>
+                <span>Dark mode</span>
+            </button>
+            <button class="sidebar-action logout-btn" id="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="global-search" placeholder="Search invoices, products, customers..." autocomplete="off">
+                <div class="search-results" id="search-results"></div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="notification-wrapper">
+                    <button class="notification-btn" id="notification-btn" aria-label="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-count" id="notification-count">0</span>
+                    </button>
+                    <div class="notification-panel" id="notification-panel">
+                        <div class="notification-header">
+                            <strong>Notifications</strong>
+                            <button id="mark-all-read">Mark all read</button>
+                        </div>
+                        <div class="notification-list" id="notification-list"></div>
+                    </div>
+                </div>
+
+                <div class="navbar-user">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-info">
+                        <strong id="navbar-user-name">User</strong>
+                        <span>Finance Admin</span>
+                    </div>
+                    <div class="user-tooltip" id="user-tooltip">User</div>
+                </div>
+
+                <button class="mobile-menu" id="mobile-menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- SETTINGS CONTENT -->
+        <section class="dashboard-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Settings</h1>
+                    <p>Manage your account preferences, business details, and system data</p>
+                </div>
+            </div>
+
+            <div class="settings-layout">
+
+                <!-- SETTINGS NAVIGATION -->
+                <div class="panel settings-menu">
+                    <button class="settings-tab active" data-tab="tab-profile">
+                        <i class="fa-regular fa-user"></i>
+                        <span>Profile Settings</span>
+                    </button>
+                    <button class="settings-tab" data-tab="tab-business">
+                        <i class="fa-regular fa-building"></i>
+                        <span>Business Info</span>
+                    </button>
+                    <button class="settings-tab" data-tab="tab-preferences">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Preferences</span>
+                    </button>
+                    <button class="settings-tab" data-tab="tab-data">
+                        <i class="fa-solid fa-database"></i>
+                        <span>Data & Backup</span>
+                    </button>
+                </div>
+
+                <!-- SETTINGS PANELS -->
+                <div class="settings-content">
+
+                    <!-- TAB 1: PROFILE -->
+                    <div class="panel settings-panel active" id="tab-profile">
+                        <div class="panel-header">
+                            <h3>Profile Settings</h3>
+                            <p>Update your personal account information</p>
+                        </div>
+                        <form id="profile-form" class="settings-form">
+                            <div class="form-group">
+                                <label for="st-fullname">Full Name</label>
+                                <input type="text" id="st-fullname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="st-email">Email Address</label>
+                                <input type="email" id="st-email" required readonly class="readonly-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="st-password">New Password (Leave blank to keep current)</label>
+                                <input type="password" id="st-password" placeholder="Min. 8 characters">
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Save Profile</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- TAB 2: BUSINESS -->
+                    <div class="panel settings-panel" id="tab-business">
+                        <div class="panel-header">
+                            <h3>Business Information</h3>
+                            <p>Your store details for invoices and receipts</p>
+                        </div>
+                        <form id="business-form" class="settings-form">
+                            <div class="form-group">
+                                <label for="st-bizname">Business / Store Name</label>
+                                <input type="text" id="st-bizname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="st-phone">Phone Number</label>
+                                <input type="text" id="st-phone" placeholder="+93 700 000 000">
+                            </div>
+                            <div class="form-group">
+                                <label for="st-address">Address</label>
+                                <input type="text" id="st-address" placeholder="Store address">
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Save Business Info</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- TAB 3: PREFERENCES -->
+                    <div class="panel settings-panel" id="tab-preferences">
+                        <div class="panel-header">
+                            <h3>Preferences</h3>
+                            <p>System language, currency, and appearance</p>
+                        </div>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label>Default Currency</label>
+                                <div class="radio-group">
+                                    <label class="radio-card">
+                                        <input type="radio" name="currency-opt" value="USD">
+                                        <div>
+                                            <strong>Dollar ($)</strong>
+                                            <span>US Dollar</span>
+                                        </div>
+                                    </label>
+                                    <label class="radio-card">
+                                        <input type="radio" name="currency-opt" value="AFN">
+                                        <div>
+                                            <strong>Afghani (؋)</strong>
+                                            <span>Afghan Afghani</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: DATA & BACKUP -->
+                    <div class="panel settings-panel" id="tab-data">
+                        <div class="panel-header">
+                            <h3>Data & Backup</h3>
+                            <p>Export your store data or restore from a previous backup</p>
+                        </div>
+                        <div class="settings-form">
+                            <div class="action-card">
+                                <div>
+                                    <strong>Export Backup (JSON)</strong>
+                                    <p>Download all your products, sales, and settings into a single backup file.</p>
+                                </div>
+                                <button type="button" class="btn-secondary" id="btn-export-json">
+                                    <i class="fa-solid fa-file-export"></i>
+                                    <span>Export Backup</span>
+                                </button>
+                            </div>
+
+                            <div class="action-card danger-zone">
+                                <div>
+                                    <strong>Clear Account Data</strong>
+                                    <p>Reset all sales and products. This action cannot be undone.</p>
+                                </div>
+                                <button type="button" class="btn-secondary btn-danger" id="btn-reset-data">
+                                    <i class="fa-solid fa-trash"></i>
+                                    <span>Clear All Data</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="settings.js"></script>
+<script src="lang.js"></script>
+
+</body>
+</html>

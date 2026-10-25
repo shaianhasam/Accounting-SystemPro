@@ -20,8 +20,28 @@
             }
         }
 
+        /* Currency is a per-account setting ("USD" or "AFN"), chosen on the
+           Product page. Amounts are never converted - only the symbol and
+           number format change. */
+        function getCurrency() {
+            const store = safeParse(localStorage.getItem("accountProCurrencyByUser"), {});
+            return store && store[uid] === "AFN" ? "AFN" : "USD";
+        }
+
+        function currencySymbol() {
+            return getCurrency() === "AFN" ? "\u060B" : "\$";
+        }
+
         function money(value) {
             const amount = Number(value) || 0;
+
+            if (getCurrency() === "AFN") {
+                return amount.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) + " \u060B";
+            }
+
             return amount.toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
@@ -295,48 +315,6 @@
                 window.location.href = "index.html";
             });
         }
-
-
-        /* =================================================
-           MOBILE SIDEBAR
-        ================================================= */
-
-        const sidebar = $("sidebar");
-        const mobileMenu = $("mobile-menu");
-
-        if (sidebar && mobileMenu) {
-            mobileMenu.addEventListener("click", function (event) {
-                event.stopPropagation();
-                sidebar.classList.toggle("open");
-            });
-
-            document.addEventListener("click", function (event) {
-                if (
-                    window.innerWidth <= 800 &&
-                    sidebar.classList.contains("open") &&
-                    !sidebar.contains(event.target) &&
-                    !mobileMenu.contains(event.target)
-                ) {
-                    sidebar.classList.remove("open");
-                }
-            });
-        }
-
-        document.querySelectorAll(".future-link").forEach(link => {
-            link.addEventListener("click", function (event) {
-                event.preventDefault();
-                const module = link.dataset.module || "Module";
-
-                window.alert(
-                    `${module} is not connected yet.\n\n` +
-                    "It will be connected to the Local Storage modules first, then to Backend."
-                );
-
-                if (window.innerWidth <= 800 && sidebar) {
-                    sidebar.classList.remove("open");
-                }
-            });
-        });
 
 
         /* =================================================
@@ -658,7 +636,7 @@
                             <td><span class="status ${statusClass(status)}">${status}</span></td>
                             <td>
                                 ${status !== "In Stock" ? `
-                                    <button class="act-btn restock" data-id="${product.id}" title="Add stock">
+                                    <button class="act-btn restock" data-id="\${product.id}" title="Add stock">
                                         <i class="fa-solid fa-box-open"></i>
                                     </button>
                                 ` : ""}
@@ -758,6 +736,8 @@
 
         function clearForm() {
             form.reset();
+            const fileNameDisplay = $("file-name-display");
+            if (fileNameDisplay) fileNameDisplay.textContent = "Choose image";
             editingId = null;
             submitBtn.innerHTML = `<i class="fa-solid fa-plus"></i><span>Add Product</span>`;
             cancelBtn.style.display = "none";
@@ -847,7 +827,10 @@
                 const price = Number($("p-price").value);
                 const stock = Number($("p-stock").value);
                 const minStock = Number($("p-min").value);
-                const imageFile = $("p-image").files[0] || null;
+                
+                // اصلاح شده با آی‌دی درست اینپوت فایل
+                const imageInput = $("product-image-input");
+                const imageFile = (imageInput && imageInput.files) ? imageInput.files[0] : null;
 
                 if (!name) {
                     window.alert("Please enter a product name.");
@@ -930,12 +913,67 @@
 
 
         /* =================================================
+           CURRENCY (per account: Dollar or Afghani)
+        ================================================= */
+
+        const curModal = $("cur-modal");
+
+        function refreshCurrencyUI() {
+            const symbol = currencySymbol();
+
+            document.querySelectorAll(".cur-btn").forEach(btn => {
+                btn.textContent = symbol;
+            });
+
+            $("p-cost").placeholder = symbol + " 0.00";
+            $("p-price").placeholder = symbol + " 0.00";
+
+            document.querySelectorAll(".cur-option").forEach(opt => {
+                opt.classList.toggle("active", opt.dataset.cur === getCurrency());
+            });
+        }
+
+        function setCurrency(code) {
+            const store = getStore("accountProCurrencyByUser");
+            store[uid] = code === "AFN" ? "AFN" : "USD";
+            saveStore("accountProCurrencyByUser", store);
+        }
+
+        document.querySelectorAll(".cur-btn").forEach(btn => {
+            btn.addEventListener("click", () => curModal.classList.add("show"));
+        });
+
+        document.querySelectorAll(".cur-option").forEach(opt => {
+            opt.addEventListener("click", function () {
+                const code = opt.dataset.cur;
+
+                if (code !== getCurrency()) {
+                    setCurrency(code);
+                    logActivity("Currency changed", code === "AFN" ? "Now selling in Afghani" : "Now selling in Dollar");
+                    refreshAll();
+                }
+
+                refreshCurrencyUI();
+                curModal.classList.remove("show");
+            });
+        });
+
+        $("cur-cancel").addEventListener("click", () => curModal.classList.remove("show"));
+
+        curModal.addEventListener("click", function (event) {
+            if (event.target === curModal) curModal.classList.remove("show");
+        });
+
+        refreshCurrencyUI();
+
+
+        /* =================================================
            FILTERS
         ================================================= */
 
         const filterSearch = $("f-search");
         const filterCategory = $("f-category");
-        const filterStatus = $("f-status");
+        const filterStatus =$("f-status");
         const filterClear = $("f-clear");
         const filterApply = $("f-apply");
 
@@ -1016,14 +1054,57 @@
 
 /* =================================================
    BFCACHE GUARD
-   If the browser restores this page from back/forward
-   cache (e.g. user clicks Back instead of a sidebar
-   link), the page can show a frozen snapshot from
-   before data changed elsewhere. Force a fresh reload
-   in that case so stock/status/notifications are current.
 ================================================= */
 window.addEventListener("pageshow", function (event) {
     if (event.persisted) {
         window.location.reload();
+    }
+});
+
+window.addEventListener("storage", function (event) {
+    if (event.key === "accountProCurrencyByUser") {
+        window.location.reload();
+    }
+});
+
+/* =================================================
+   MOBILE SIDEBAR & FILE UPLOAD LISTENERS
+================================================= */
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const mobileBtn = document.getElementById("mobile-menu");
+
+    if (sidebar && mobileBtn) {
+        let overlay = document.querySelector(".sidebar-overlay");
+        if (!overlay) {
+            overlay = document.createElement("div");
+            overlay.className = "sidebar-overlay";
+            document.body.appendChild(overlay);
+        }
+
+        mobileBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+        });
+
+        overlay.addEventListener("click", function () {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
+        });
+    }
+
+    // مدیریت نمایش نام فایل انتخاب شده در باکس آپلود
+    const fileInput = document.getElementById("product-image-input");
+    const fileNameDisplay = document.getElementById("file-name-display");
+
+    if (fileInput && fileNameDisplay) {
+        fileInput.addEventListener("change", function () {
+            if (fileInput.files && fileInput.files.length > 0) {
+                fileNameDisplay.textContent = fileInput.files[0].name;
+            } else {
+                fileNameDisplay.textContent = "Choose image";
+            }
+        });
     }
 });

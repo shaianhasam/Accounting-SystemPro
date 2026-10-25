@@ -20,8 +20,28 @@
             }
         }
 
+        /* Currency is a per-account setting ("USD" or "AFN"), chosen on the
+           Product page. Amounts are never converted - only the symbol and
+           number format change. */
+        function getCurrency() {
+            const store = safeParse(localStorage.getItem("accountProCurrencyByUser"), {});
+            return store && store[uid] === "AFN" ? "AFN" : "USD";
+        }
+
+        function currencySymbol() {
+            return getCurrency() === "AFN" ? "\u060B" : "$";
+        }
+
         function money(value) {
             const amount = Number(value) || 0;
+
+            if (getCurrency() === "AFN") {
+                return amount.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) + " \u060B";
+            }
+
             return amount.toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
@@ -795,7 +815,7 @@
 
                 if (received < total) {
                     window.alert(
-                        `Received amount ($${received.toFixed(2)}) is less than the total due ($${total.toFixed(2)}).`
+                        `Received amount (${money(received)}) is less than the total due (${money(total)}).`
                     );
                     return;
                 }
@@ -983,4 +1003,68 @@ window.addEventListener("pageshow", function (event) {
     if (event.persisted) {
         window.location.reload();
     }
+});
+
+/* If the currency is changed in another tab, reload so every
+   amount on this page is shown in the new currency. */
+window.addEventListener("storage", function (event) {
+    if (event.key === "accountProCurrencyByUser") {
+        window.location.reload();
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const mobileBtn = document.getElementById("mobile-menu");
+
+    if (!sidebar || !mobileBtn) return;
+
+    // ساخت لایه تاریک پشت سایدبار
+    let overlay = document.querySelector(".mobile-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.className = "mobile-overlay";
+        document.body.appendChild(overlay);
+    }
+
+    // باز و بسته کردن سایدبار با کلیک روی دکمه هومبرگر
+    mobileBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("show");
+    });
+
+    // بستن سایدبار با کلیک روی فضای تاریک بیرون
+    overlay.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const mobileBtn = document.getElementById("mobile-menu");
+
+    if (!sidebar || !mobileBtn) return;
+
+    // بررسی و ساخت لایه تاریک پشت سایدبار
+    let overlay = document.querySelector(".sidebar-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.className = "sidebar-overlay";
+        document.body.appendChild(overlay);
+    }
+
+    // باز و بسته کردن منو با دکمه همبرگری
+    mobileBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("active");
+    });
+
+    // بستن کامل منو و لایه تاریک با یک کلیک روی بخش سایه
+    overlay.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+    });
 });

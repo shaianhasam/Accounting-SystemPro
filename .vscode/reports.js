@@ -22,8 +22,28 @@
             }
         }
 
+        /* Currency is a per-account setting ("USD" or "AFN"), chosen on the
+           Product page. Amounts are never converted - only the symbol and
+           number format change. */
+        function getCurrency() {
+            const store = safeParse(localStorage.getItem("accountProCurrencyByUser"), {});
+            return store && store[uid] === "AFN" ? "AFN" : "USD";
+        }
+
+        function currencySymbol() {
+            return getCurrency() === "AFN" ? "\u060B" : "\$";
+        }
+
         function money(value) {
             const amount = Number(value) || 0;
+
+            if (getCurrency() === "AFN") {
+                return amount.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) + " \u060B";
+            }
+
             return amount.toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
@@ -57,6 +77,7 @@
             productsStore: "accountProProductsByUser",
             salesStore: "accountProSalesByUser",
             notificationsStore: "accountProNotificationsByUser",
+            expensesStore: "accountProExpensesByUser", // اضافه شده برای مدیریت هزینه‌ها
             theme: "dashboardTheme"
         };
 
@@ -181,35 +202,6 @@
             });
         }
 
-        const sidebar = $("sidebar");
-        const mobileMenu = $("mobile-menu");
-
-        if (sidebar && mobileMenu) {
-            mobileMenu.addEventListener("click", function (event) {
-                event.stopPropagation();
-                sidebar.classList.toggle("open");
-            });
-            document.addEventListener("click", function (event) {
-                if (
-                    window.innerWidth <= 800 &&
-                    sidebar.classList.contains("open") &&
-                    !sidebar.contains(event.target) &&
-                    !mobileMenu.contains(event.target)
-                ) {
-                    sidebar.classList.remove("open");
-                }
-            });
-        }
-
-        document.querySelectorAll(".future-link").forEach(link => {
-            link.addEventListener("click", function (event) {
-                event.preventDefault();
-                const module = link.dataset.module || "Module";
-                window.alert(`${module} is not connected yet.\n\nIt will be connected to the Local Storage modules first, then to Backend.`);
-                if (window.innerWidth <= 800 && sidebar) sidebar.classList.remove("open");
-            });
-        });
-
 
         /* =================================================
            NOTIFICATIONS
@@ -271,19 +263,9 @@
             });
         }
 
-        const markAllRead = $("mark-all-read");
-        if (markAllRead) {
-            markAllRead.addEventListener("click", function () {
-                const notifications = getUserArray(KEYS.notificationsStore, uid);
-                notifications.forEach(n => { n.read = true; });
-                setUserArray(KEYS.notificationsStore, uid, notifications);
-                loadNotifications();
-            });
-        }
-
 
         /* =================================================
-           GLOBAL SEARCH (products -> Product page, sales -> Sales History)
+           GLOBAL SEARCH
         ================================================= */
 
         const globalSearch = $("global-search");
@@ -341,12 +323,6 @@
             globalSearch.addEventListener("input", () => performGlobalSearch(globalSearch.value));
         }
 
-        document.addEventListener("click", function (event) {
-            if (searchResults && globalSearch && !searchResults.contains(event.target) && !globalSearch.contains(event.target)) {
-                searchResults.classList.remove("show");
-            }
-        });
-
 
         /* =================================================
            DATE HELPERS
@@ -387,7 +363,7 @@
 
 
         /* =================================================
-           SALE HELPERS (same rules as dashboard.js)
+           SALE HELPERS
         ================================================= */
 
         function saleDate(sale) {
@@ -520,7 +496,7 @@
 
 
         /* =================================================
-           STAT CARDS + SUMMARY
+           STAT CARDS + SUMMARY (محاسبه واقعی هزینه‌ها)
         ================================================= */
 
         function setGrowth(id, current, previous) {
@@ -553,14 +529,25 @@
             const prevFrom = startOfDay(addDays(range.from, -days));
             const previous = sumUp(salesInRange(prevFrom, prevTo));
 
-            const expenses = 0; // no expense tracking exists in the app yet
-            const net = current.profit - expenses;
+            // خواندن هزینه‌های تجاری پرداخت‌شده واقعی از localStorage
+            const userExpenses = getUserArray(KEYS.expensesStore, uid);
+            let totalBusinessExpenses = 0;
+            userExpenses.forEach(ex => {
+                if (ex.status === "Paid" && ex.type === "Business") {
+                    const exDate = getDate(ex.date);
+                    if (exDate && exDate >= range.from && exDate <= range.to) {
+                        totalBusinessExpenses += Number(ex.amount || 0);
+                    }
+                }
+            });
+
+            const net = current.profit - totalBusinessExpenses;
 
             $("st-sales").textContent = money(current.revenue);
             $("st-profit").textContent = money(current.profit);
             $("st-orders").textContent = current.orders;
             $("st-avg").textContent = money(current.avg);
-            $("st-expenses").textContent = money(expenses);
+            $("st-expenses").textContent = money(totalBusinessExpenses);
 
             setGrowth("st-sales-growth", current.revenue, previous.revenue);
             setGrowth("st-profit-growth", current.profit, previous.profit);
@@ -569,7 +556,7 @@
 
             $("sm-sales").textContent = money(current.revenue);
             $("sm-profit").textContent = money(current.profit);
-            $("sm-expenses").textContent = money(expenses);
+            $("sm-expenses").textContent = money(totalBusinessExpenses);
             $("sm-net").textContent = money(net);
             $("sm-orders").textContent = current.orders;
             $("sm-customers").textContent = current.customers;
@@ -655,7 +642,7 @@
                             ticks: {
                                 color: theme.tick,
                                 font: { size: 9 },
-                                callback: v => "$" + (v >= 1000 ? (v / 1000) + "K" : v)
+                                callback: v => currencySymbol() + (v >= 1000 ? (v / 1000) + "K" : v)
                             }
                         },
                         x: {
@@ -698,6 +685,8 @@
             if (!body || !foot) return;
 
             const buckets = buildBuckets(gran.table);
+            const userExpenses = getUserArray(KEYS.expensesStore, uid);
+
             const total = buckets.reduce((acc, b) => {
                 acc.sales += b.sales;
                 acc.profit += b.profit;
@@ -711,17 +700,44 @@
                 return;
             }
 
-            body.innerHTML = buckets.map(b => `
-                <tr>
-                    <td>${escapeHTML(b.full)}</td>
-                    <td>${money(b.sales)}</td>
-                    <td>${money(b.profit)}</td>
-                    <td>${b.orders}</td>
-                    <td>${money(b.orders ? b.sales / b.orders : 0)}</td>
-                    <td>${money(0)}</td>
-                    <td>${money(b.profit)}</td>
-                </tr>
-            `).join("");
+            body.innerHTML = buckets.map(b => {
+                // محاسبه هزینه‌های هر سطل زمانی (Bucket) در جدول
+                let bucketExpenses = 0;
+                userExpenses.forEach(ex => {
+                    if (ex.status === "Paid" && ex.type === "Business") {
+                        const d = getDate(ex.date);
+                        if (d && d >= b.start && d <= b.end) {
+                            bucketExpenses += Number(ex.amount || 0);
+                        }
+                    }
+                });
+
+                const netBProfit = b.profit - bucketExpenses;
+
+                return `
+                    <tr>
+                        <td>${escapeHTML(b.full)}</td>
+                        <td>${money(b.sales)}</td>
+                        <td>${money(b.profit)}</td>
+                        <td>${b.orders}</td>
+                        <td>${money(b.orders ? b.sales / b.orders : 0)}</td>
+                        <td>${money(bucketExpenses)}</td>
+                        <td>${money(netBProfit)}</td>
+                    </tr>
+                `;
+            }).join("");
+
+            let overallExpenses = 0;
+            userExpenses.forEach(ex => {
+                if (ex.status === "Paid" && ex.type === "Business") {
+                    const d = getDate(ex.date);
+                    if (d && d >= range.from && d <= range.to) {
+                        overallExpenses += Number(ex.amount || 0);
+                    }
+                }
+            });
+
+            const overallNetProfit = total.profit - overallExpenses;
 
             foot.innerHTML = `
                 <tr>
@@ -730,8 +746,8 @@
                     <td>${money(total.profit)}</td>
                     <td>${total.orders}</td>
                     <td>${money(total.orders ? total.sales / total.orders : 0)}</td>
-                    <td>${money(0)}</td>
-                    <td>${money(total.profit)}</td>
+                    <td>${money(overallExpenses)}</td>
+                    <td>${money(overallNetProfit)}</td>
                 </tr>
             `;
         }
@@ -902,11 +918,13 @@
 
 
         /* =================================================
-           EXPORT REPORT (CSV of the Sales Report table)
+           EXPORT REPORT
         ================================================= */
 
         $("export-report-btn").addEventListener("click", function () {
             const buckets = buildBuckets(gran.table);
+            const userExpenses = getUserArray(KEYS.expensesStore, uid);
+
             const total = buckets.reduce((acc, b) => {
                 acc.sales += b.sales;
                 acc.profit += b.profit;
@@ -920,21 +938,41 @@
             }
 
             const rows = [
-                ["AccountPro Sales Report", `${fmtLong(range.from)} - ${fmtLong(range.to)}`],
+                ["AccountPro Sales & Expenses Report", `${fmtLong(range.from)} - ${fmtLong(range.to)}`, "Currency: " + getCurrency()],
                 [],
                 ["Date", "Total Sales", "Total Profit", "Orders", "Avg Order Value", "Expenses", "Net Profit"]
             ];
 
             buckets.forEach(b => {
+                let bucketExpenses = 0;
+                userExpenses.forEach(ex => {
+                    if (ex.status === "Paid" && ex.type === "Business") {
+                        const d = getDate(ex.date);
+                        if (d && d >= b.start && d <= b.end) {
+                            bucketExpenses += Number(ex.amount || 0);
+                        }
+                    }
+                });
+
                 rows.push([
                     b.full,
                     b.sales.toFixed(2),
                     b.profit.toFixed(2),
                     b.orders,
                     (b.orders ? b.sales / b.orders : 0).toFixed(2),
-                    "0.00",
-                    b.profit.toFixed(2)
+                    bucketExpenses.toFixed(2),
+                    (b.profit - bucketExpenses).toFixed(2)
                 ]);
+            });
+
+            let overallExpenses = 0;
+            userExpenses.forEach(ex => {
+                if (ex.status === "Paid" && ex.type === "Business") {
+                    const d = getDate(ex.date);
+                    if (d && d >= range.from && d <= range.to) {
+                        overallExpenses += Number(ex.amount || 0);
+                    }
+                }
             });
 
             rows.push([
@@ -943,8 +981,8 @@
                 total.profit.toFixed(2),
                 total.orders,
                 (total.orders ? total.sales / total.orders : 0).toFixed(2),
-                "0.00",
-                total.profit.toFixed(2)
+                overallExpenses.toFixed(2),
+                (total.profit - overallExpenses).toFixed(2)
             ]);
 
             const csv = rows.map(row =>
@@ -991,7 +1029,8 @@
                 !event.key ||
                 event.key === KEYS.salesStore ||
                 event.key === KEYS.productsStore ||
-                event.key === KEYS.notificationsStore
+                event.key === KEYS.notificationsStore ||
+                event.key === KEYS.expensesStore
             ) {
                 refreshReports();
             }
@@ -1014,4 +1053,40 @@ window.addEventListener("pageshow", function (event) {
     if (event.persisted) {
         window.location.reload();
     }
+});
+
+/* If the currency is changed in another tab, reload so every
+   amount on this page is shown in the new currency. */
+window.addEventListener("storage", function (event) {
+    if (event.key === "accountProCurrencyByUser") {
+        window.location.reload();
+    }
+});
+
+/* =================================================
+   SIDEBAR MOBILE OVERLAY
+================================================= */
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const mobileBtn = document.getElementById("mobile-menu");
+
+    if (!sidebar || !mobileBtn) return;
+
+    let overlay = document.querySelector(".sidebar-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.className = "sidebar-overlay";
+        document.body.appendChild(overlay);
+    }
+
+    mobileBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("active");
+    });
+
+    overlay.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+    });
 });

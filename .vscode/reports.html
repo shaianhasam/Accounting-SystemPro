@@ -13,6 +13,9 @@
 
     <link rel="stylesheet" href="dash.css">
     <link rel="stylesheet" href="reports.css">
+
+    <!-- lang -->
+    <link rel="stylesheet" href="lang.css">
 </head>
 
 <body>
@@ -54,12 +57,19 @@
                     <span>Sales History</span>
                 </a>
 
+                                <a href="expenses.html" class="nav-item">
+    <i class="fa-solid fa-receipt"></i>
+    <span>Expenses</span>
+</a>
+
                 <a href="reports.html" class="nav-item active">
                     <i class="fa-regular fa-file-lines"></i>
                     <span>Reports</span>
                 </a>
 
-                <a href="#" class="nav-item future-link" data-module="Settings">
+
+
+                <a href="settings.html" class="nav-item">
                     <i class="fa-solid fa-gear"></i>
                     <span>Settings</span>
                 </a>
@@ -223,14 +233,15 @@
                     <span class="growth-row"><span class="growth" id="st-avg-growth">—</span> vs previous period</span>
                 </div>
 
-                <div class="stat-card">
-                    <div class="stat-top">
-                        <div class="stat-icon red"><i class="fa-solid fa-credit-card"></i></div>
-                    </div>
-                    <strong id="st-expenses">$0.00</strong>
-                    <span>Total Expenses</span>
-                    <span class="growth-row rp-soon">Not tracked yet</span>
-                </div>
+               <!-- نمونه کد کارت Total Expenses در HTML -->
+<div class="stat-card">
+    <div class="stat-top">
+        <div class="stat-icon red"><i class="fa-solid fa-receipt"></i></div>
+    </div>
+    <strong id="st-expenses">$0.00</strong>
+    <span>Total Expenses</span>
+    <span class="growth-row"><span class="growth" id="st-expenses-growth">—</span> vs previous period</span>
+</div>
 
             </div>
 
@@ -359,6 +370,9 @@
 </div>
 
 <script src="reports.js"></script>
+
+<!-- lang -->
+<script src="lang.js"></script>
 
 </body>
 </html>

@@ -12,12 +12,14 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     >
 
-    <!-- Dashboard CSS (shared sidebar / navbar / base styles) -->
+    <!-- Dashboard CSS -->
     <link rel="stylesheet" href="dash.css">
 
     <!-- Product Management specific styles -->
     <link rel="stylesheet" href="products.css">
-    
+
+    <!-- lang -->
+    <link rel="stylesheet" href="lang.css">
 </head>
 
 <body>
@@ -25,7 +27,7 @@
 <div class="app">
 
     <!-- =========================================
-         SIDEBAR (identical to Dashboard)
+         SIDEBAR
     ========================================== -->
 
     <aside class="sidebar" id="sidebar">
@@ -46,40 +48,36 @@
 
             <nav class="sidebar-nav">
 
-                <a href="dashboard.html"
-                   class="nav-item">
-
+                <a href="dashboard.html" class="nav-item">
                     <i class="fa-solid fa-gauge-high"></i>
                     <span>Dashboard</span>
-
                 </a>
-
 
                 <a href="product.html" class="nav-item active">
                     <i class="fa-solid fa-box"></i>
                     <span>Product Management</span>
                 </a>
 
-
                 <a href="sales.html" class="nav-item">
                     <i class="fa-solid fa-chart-line"></i>
                     <span>Sales History</span>
                 </a>
 
+                               <a href="expenses.html" class="nav-item">
+    <i class="fa-solid fa-receipt"></i>
+    <span>Expenses</span>
+</a>
 
                 <a href="reports.html" class="nav-item">
                     <i class="fa-regular fa-file-lines"></i>
                     <span>Reports</span>
                 </a>
 
+ 
 
-                <a href="#"
-                   class="nav-item future-link"
-                   data-module="Settings">
-
+                <a href="settings.html" class="nav-item">
                     <i class="fa-solid fa-gear"></i>
                     <span>Settings</span>
-
                 </a>
 
             </nav>
@@ -90,20 +88,13 @@
         <div class="sidebar-bottom">
 
             <button class="sidebar-action" id="dark-mode-btn">
-
                 <i class="fa-regular fa-sun" id="theme-icon"></i>
-
                 <span>Dark mode</span>
-
             </button>
 
-
             <button class="sidebar-action logout-btn" id="logout-btn">
-
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
                 <span>Logout</span>
-
             </button>
 
         </div>
@@ -118,107 +109,53 @@
     <main class="main-content">
 
         <!-- =====================================
-             TOP NAVBAR (identical to Dashboard)
+             TOP NAVBAR
         ====================================== -->
 
         <header class="topbar">
 
             <div class="search-container">
-
                 <i class="fa-solid fa-magnifying-glass"></i>
-
                 <input
                     type="text"
                     id="global-search"
                     placeholder="Search invoices, products, customers..."
                     autocomplete="off"
                 >
-
-                <div
-                    class="search-results"
-                    id="search-results">
-                </div>
-
+                <div class="search-results" id="search-results"></div>
             </div>
 
 
             <div class="topbar-right">
 
                 <!-- Notification -->
-
                 <div class="notification-wrapper">
-
-                    <button
-                        class="notification-btn"
-                        id="notification-btn"
-                        aria-label="Notifications">
-
+                    <button class="notification-btn" id="notification-btn" aria-label="Notifications">
                         <i class="fa-regular fa-bell"></i>
-
-                        <span
-                            class="notification-count"
-                            id="notification-count">
-                            0
-                        </span>
-
+                        <span class="notification-count" id="notification-count">0</span>
                     </button>
 
-
-                    <div
-                        class="notification-panel"
-                        id="notification-panel">
-
+                    <div class="notification-panel" id="notification-panel">
                         <div class="notification-header">
-
                             <strong>Notifications</strong>
-
-                            <button id="mark-all-read">
-                                Mark all read
-                            </button>
-
+                            <button id="mark-all-read">Mark all read</button>
                         </div>
-
-
-                        <div
-                            class="notification-list"
-                            id="notification-list">
-                        </div>
-
+                        <div class="notification-list" id="notification-list"></div>
                     </div>
-
                 </div>
-
 
                 <!-- User -->
-
                 <div class="navbar-user">
-
-                    <div
-                        class="user-avatar"
-                        id="user-avatar">
-                        U
-                    </div>
-
+                    <div class="user-avatar" id="user-avatar">U</div>
                     <div class="user-info">
-
-                        <strong id="navbar-user-name">
-                            User
-                        </strong>
-
+                        <strong id="navbar-user-name">User</strong>
                         <span>Finance Admin</span>
-
                     </div>
                     <div class="user-tooltip" id="user-tooltip">User</div>
-
                 </div>
 
-
-                <button
-                    class="mobile-menu"
-                    id="mobile-menu">
-
+                <button class="mobile-menu" id="mobile-menu">
                     <i class="fa-solid fa-bars"></i>
-
                 </button>
 
             </div>
@@ -234,14 +171,12 @@
 
             <!-- Header + summary cards -->
             <div class="dashboard-header pm-header">
-
                 <div>
                     <h1>Product Management</h1>
                     <p>Add, edit and manage your store products</p>
                 </div>
 
                 <div class="pm-stats">
-
                     <div class="stat-card mini">
                         <div class="stat-top">
                             <div class="stat-icon blue"><i class="fa-solid fa-box"></i></div>
@@ -273,15 +208,12 @@
                         <strong id="s-out">0</strong>
                         <span>Out of Stock</span>
                     </div>
-
                 </div>
-
             </div>
 
 
             <!-- Add product -->
             <div class="panel add-panel">
-
                 <div class="panel-header">
                     <div>
                         <h3>Add New Product</h3>
@@ -290,8 +222,8 @@
 
                 <form id="product-form" class="prod-form" novalidate>
 
+                    <!-- ردیف اول فیلدها -->
                     <div class="form-row">
-
                         <div class="form-group">
                             <label for="p-name">Product Name</label>
                             <input type="text" id="p-name" placeholder="Enter product name">
@@ -314,19 +246,24 @@
 
                         <div class="form-group">
                             <label for="p-cost">Purchase Price</label>
-                            <input type="number" id="p-cost" min="0" step="0.01" placeholder="$ 0.00">
+                            <div class="cur-input">
+                                <button type="button" class="cur-btn" title="Change currency">$</button>
+                                <input type="number" id="p-cost" min="0" step="0.01" placeholder="0.00">
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label for="p-price">Selling Price</label>
-                            <input type="number" id="p-price" min="0" step="0.01" placeholder="$ 0.00">
+                            <div class="cur-input">
+                                <button type="button" class="cur-btn" title="Change currency">$</button>
+                                <input type="number" id="p-price" min="0" step="0.01" placeholder="0.00">
+                            </div>
                         </div>
-
                     </div>
 
 
+                    <!-- ردیف دوم فیلدها -->
                     <div class="form-row">
-
                         <div class="form-group">
                             <label for="p-stock">Stock Quantity</label>
                             <input type="number" id="p-stock" min="0" step="1" placeholder="Enter quantity">
@@ -338,30 +275,31 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="p-image">Product Image (Optional)</label>
-                            <input type="file" id="p-image" accept="image/*">
+                            <label>Product Image (Optional)</label>
+                            <div class="file-upload-box" onclick="document.getElementById('product-image-input').click();">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span id="file-name-display">Choose image</span>
+                                <input type="file" id="product-image-input" accept="image/*" style="display: none;">
+                            </div>
                         </div>
 
-                        <div class="form-group form-actions">
-                            <button type="submit" class="btn-primary" id="p-submit">
+                        <div class="form-group form-actions" style="display: flex; align-items: flex-end; gap: 8px;">
+                            <button type="submit" class="btn-primary" id="p-submit" style="width: 100%; height: 42px;">
                                 <i class="fa-solid fa-plus"></i>
                                 <span>Add Product</span>
                             </button>
-                            <button type="button" class="btn-secondary" id="p-cancel" style="display:none;">
+                            <button type="button" class="btn-secondary" id="p-cancel" style="display:none; height: 42px;">
                                 Cancel
                             </button>
                         </div>
-
                     </div>
 
                 </form>
-
             </div>
 
 
             <!-- Filters -->
             <div class="filters-bar">
-
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="f-search" placeholder="Search products..." autocomplete="off">
@@ -395,13 +333,11 @@
                     <i class="fa-solid fa-filter"></i>
                     Filter
                 </button>
-
             </div>
 
 
             <!-- All products table -->
             <div class="panel table-panel">
-
                 <div class="panel-header">
                     <div>
                         <h3>All Products</h3>
@@ -410,9 +346,7 @@
                 </div>
 
                 <div class="table-wrapper">
-
                     <table>
-
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -427,15 +361,11 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-
                         <tbody id="prod-body"></tbody>
-
                     </table>
-
                 </div>
 
                 <div class="pagination" id="pagination"></div>
-
             </div>
 
         </section>
@@ -445,8 +375,30 @@
 </div>
 
 
-<!-- Product Management JavaScript -->
+<!-- Currency choice dialog -->
+<div class="cur-modal" id="cur-modal">
+    <div class="cur-modal-box">
+        <h3>Which currency do you sell in?</h3>
+        <p>This applies to your whole shop: products, sales, invoices and reports. Existing amounts are not converted - only the symbol changes.</p>
+
+        <div class="cur-options">
+            <button type="button" class="cur-option" data-cur="USD">
+                <strong>$</strong>
+                <span>Dollar (USD)</span>
+            </button>
+            <button type="button" class="cur-option" data-cur="AFN">
+                <strong>&#1547;</strong>
+                <span>Afghani (AFN)</span>
+            </button>
+        </div>
+
+        <button type="button" class="btn-secondary" id="cur-cancel">Cancel</button>
+    </div>
+</div>
+
+<!-- Scripts -->
 <script src="product.js"></script>
+<script src="lang.js"></script>
 
 </body>
 </html>

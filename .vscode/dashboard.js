@@ -27,8 +27,27 @@
             }
         }
 
+        /* Currency is a per-account setting ("USD" or "AFN"), chosen on the
+           Product page. Amounts are never converted - only the symbol and
+           number format change. */
+        function getCurrency() {
+            const store = safeParse(localStorage.getItem("accountProCurrencyByUser"), {});
+            return store && store[uid] === "AFN" ? "AFN" : "USD";
+        }
+
+        function currencySymbol() {
+            return getCurrency() === "AFN" ? "\u060B" : "$";
+        }
+
         function money(value) {
             const amount = Number(value) || 0;
+
+            if (getCurrency() === "AFN") {
+                return amount.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) + " \u060B";
+            }
 
             return amount.toLocaleString("en-US", {
                 style: "currency",
@@ -1354,3 +1373,122 @@ window.addEventListener("pageshow", function (event) {
         window.location.reload();
     }
 });
+
+/* If the currency is changed in another tab, reload so every
+   amount on this page is shown in the new currency. */
+window.addEventListener("storage", function (event) {
+    if (event.key === "accountProCurrencyByUser") {
+        window.location.reload();
+    }
+});
+
+
+// لایه پشت سایدبار را بساز و به صفحه اضافه کن
+let overlay = document.querySelector(".sidebar-overlay");
+if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "sidebar-overlay";
+    document.body.appendChild(overlay);
+}
+
+const sidebar = document.getElementById("sidebar");
+const mobileMenuBtn = document.getElementById("mobile-menu");
+
+if (mobileMenuBtn && sidebar) {
+    mobileMenuBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("active");
+    });
+
+    // بستن منو با کلیک روی لایه تاریک پشت آن
+    overlay.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const mobileBtn = document.getElementById("mobile-menu");
+
+    if (!sidebar || !mobileBtn) return;
+
+    // ساخت لایه تاریک پشت سایدبار
+    let overlay = document.querySelector(".mobile-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.className = "mobile-overlay";
+        document.body.appendChild(overlay);
+    }
+
+    // باز و بسته کردن سایدبار با کلیک روی دکمه هومبرگر
+    mobileBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("show");
+    });
+
+    // بستن سایدبار با کلیک روی فضای تاریک بیرون
+    overlay.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const mobileBtn = document.getElementById("mobile-menu");
+
+    if (!sidebar || !mobileBtn) return;
+
+    // بررسی و ساخت لایه تاریک پشت سایدبار
+    let overlay = document.querySelector(".sidebar-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.className = "sidebar-overlay";
+        document.body.appendChild(overlay);
+    }
+
+    // باز و بسته کردن منو با دکمه همبرگری
+    mobileBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("active");
+    });
+
+    // بستن کامل منو و لایه تاریک با یک کلیک روی بخش سایه
+    overlay.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+    });
+});
+
+/* =========================================================
+   MOBILE SIDEBAR TOGGLE & OVERLAY (داشبورد)
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const mobileBtn = document.getElementById("mobile-menu");
+
+    if (sidebar && mobileBtn) {
+        let overlay = document.querySelector(".sidebar-overlay");
+        if (!overlay) {
+            overlay = document.createElement("div");
+            overlay.className = "sidebar-overlay";
+            document.body.appendChild(overlay);
+        }
+
+        mobileBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+        });
+
+        overlay.addEventListener("click", function () {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
+        });
+    }
+});
+

@@ -1,0 +1,208 @@
+/* ==========================================================
+   SETTINGS PAGE STYLES
+   ========================================================== */
+
+.settings-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.settings-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+}
+
+.settings-tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 0;
+    background: transparent;
+    color: var(--text, #1e293b);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: 0.2s;
+}
+
+.settings-tab:hover {
+    background: #f1f5f9;
+}
+
+.settings-tab.active {
+    background: var(--primary, #2563eb);
+    color: #ffffff;
+}
+
+.settings-panel {
+    display: none;
+    padding: 24px;
+}
+
+.settings-panel.active {
+    display: block;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+    max-width: 520px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.form-group input {
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--border, #cbd5e1);
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    background: #ffffff;
+    color: var(--text, #0f172a);
+}
+
+.form-group input:focus {
+    border-color: var(--primary, #2563eb);
+}
+
+.readonly-input {
+    background: #f8fafc !important;
+    color: #94a3b8 !important;
+    cursor: not-allowed;
+}
+
+.radio-group {
+    display: flex;
+    gap: 12px;
+}
+
+.radio-card {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border, #cbd5e1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.radio-card:hover {
+    border-color: var(--primary, #2563eb);
+}
+
+.radio-card input {
+    width: 16px;
+    height: 16px;
+}
+
+.radio-card strong {
+    display: block;
+    font-size: 13px;
+}
+
+.radio-card span {
+    display: block;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.action-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: 10px;
+    background: #ffffff;
+    gap: 16px;
+}
+
+.action-card strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.action-card p {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.danger-zone {
+    border-color: #fecaca;
+    background: #fef2f2;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: #ffffff;
+    border: none;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+/* DARK MODE OVERRIDES */
+body.dark .settings-tab {
+    color: #e2e8f0;
+}
+
+body.dark .settings-tab:hover {
+    background: #334155;
+}
+
+body.dark .settings-tab.active {
+    background: var(--primary, #2563eb);
+    color: #ffffff;
+}
+
+body.dark .form-group label {
+    color: #cbd5e1;
+}
+
+body.dark .form-group input,
+body.dark .radio-card,
+body.dark .action-card {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+body.dark .readonly-input {
+    background: #0f172a !important;
+    color: #64748b !important;
+}
+
+body.dark .danger-zone {
+    background: #451a1a;
+    border-color: #7f1d1d;
+}
+
+@media (max-width: 800px) {
+    .settings-layout {
+        grid-template-columns: 1fr;
+    }
+}
