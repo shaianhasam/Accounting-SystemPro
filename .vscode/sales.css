@@ -725,3 +725,16 @@ body.dark .cart-clear {
     font-size: 22px;
     font-weight: 700;
 }
+
+/* جلوگیری از زوم خودکار مرورگر موبایل روی اینپوت‌ها و فرم‌ها */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="datetime-local"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

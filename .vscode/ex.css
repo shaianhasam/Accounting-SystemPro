@@ -76,3 +76,34 @@
         min-width: 650px !important;
     }
 }
+
+/* اصلاح ریسپانسیو جدول مصارف در موبایل */
+@media (max-width: 992px) {
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-wrapper table {
+        min-width: 750px; /* باعث می‌شود جدول در صفحات کوچک فشرده نشود و اسکرول افقی بخورد */
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+/* جلوگیری از زوم خودکار مرورگر موبایل روی اینپوت‌ها و فرم‌ها */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="datetime-local"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

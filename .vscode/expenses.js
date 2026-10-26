@@ -85,7 +85,7 @@
         const fullName = String(currentUser.fullName || currentUser.name || currentUser.username || "Admin User").trim();
         function loadUser() {
             const nameEl = $("navbar-user-name");
-            const avatarEl =$("user-avatar");
+            const avatarEl = $("user-avatar");
             const tipEl = $("user-tooltip");
             const navUser = document.querySelector(".navbar-user");
 
@@ -108,6 +108,41 @@
             }
         }
         loadUser();
+
+        // --- مدیریت دکمه Dark Mode ---
+        const darkModeBtn = $("dark-mode-btn");
+        const themeIcon = $("theme-icon");
+
+        function applyTheme() {
+            const dark = localStorage.getItem(KEYS.theme) === "dark";
+            document.body.classList.toggle("dark", dark);
+            if (themeIcon) {
+                themeIcon.className = dark ? "fa-regular fa-moon" : "fa-regular fa-sun";
+            }
+        }
+        applyTheme();
+
+        if (darkModeBtn) {
+            darkModeBtn.addEventListener("click", function () {
+                const dark = !document.body.classList.contains("dark");
+                document.body.classList.toggle("dark", dark);
+                localStorage.setItem(KEYS.theme, dark ? "dark" : "light");
+                if (themeIcon) {
+                    themeIcon.className = dark ? "fa-regular fa-moon" : "fa-regular fa-sun";
+                }
+            });
+        }
+
+        // --- مدیریت دکمه Logout ---
+        const logoutBtn = $("logout-btn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                localStorage.removeItem(KEYS.loggedIn);
+                localStorage.removeItem(KEYS.currentUser);
+                window.location.href = "index.html";
+            });
+        }
 
         function loadNotifications() {
             const list = $("notification-list");
@@ -206,7 +241,7 @@
         let editingId = null;
         const form = $("expense-form");
         const submitBtn = $("ex-submit");
-        const cancelBtn =$("ex-cancel");
+        const cancelBtn = $("ex-cancel");
 
         function fillForm(item) {
             $("ex-title").value = item.title || "";
@@ -396,7 +431,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!sidebar || !mobileBtn) return;
 
-    // بررسی و ساخت لایه تاریک پشت سایدبار در موبایل
     let overlay = document.querySelector(".sidebar-overlay");
     if (!overlay) {
         overlay = document.createElement("div");
@@ -404,14 +438,12 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.appendChild(overlay);
     }
 
-    // باز و بسته کردن منو با کلیک روی دکمه همبرگری (سه خط)
     mobileBtn.addEventListener("click", function (e) {
         e.stopPropagation();
         sidebar.classList.toggle("open");
         overlay.classList.toggle("active");
     });
 
-    // بستن کامل منو با کلیک روی بخش تاریک بیرون از سایدبار
     overlay.addEventListener("click", function () {
         sidebar.classList.remove("open");
         overlay.classList.remove("active");
