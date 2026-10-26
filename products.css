@@ -639,6 +639,7 @@ body.dark .cur-btn {
     color: var(--text-muted, #64748b);
 }
 
+
 /* جلوگیری از زوم خودکار مرورگر موبایل روی اینپوت‌ها و فرم‌ها */
 @media screen and (max-width: 768px) {
   input[type="text"],
